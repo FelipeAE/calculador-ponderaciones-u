@@ -88,7 +88,6 @@ function App() {
     setNotaAprobacion(40);
   }, []);
 
-  const esValido = modoExamen ? true : porcentajeTotal <= 100;
 
   return (
     <div className="calculadora">
