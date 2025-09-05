@@ -27,6 +27,48 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
+.ejemplo-section {
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.ejemplo-titulo {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.ejemplo-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1rem;
+  max-width: 300px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.ejemplo-input {
+  background: #e2e8f0;
+  color: #475569;
+  padding: 0.75rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  border: 2px solid #cbd5e1;
+}
+
+.ejemplo-label {
+  color: #64748b;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
 .notas-section {
   margin-bottom: 2rem;
 }
@@ -325,5 +367,10 @@
   
   .resultado .valor {
     font-size: 2.5rem;
+  }
+  
+  .ejemplo-row {
+    grid-template-columns: 1fr 1fr auto;
+    max-width: 100%;
   }
 }

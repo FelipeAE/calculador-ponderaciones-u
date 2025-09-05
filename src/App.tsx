@@ -97,6 +97,15 @@ function App() {
       </div>
 
       <div className="container">
+        <div className="ejemplo-section">
+          <div className="ejemplo-titulo">Ejemplo de formato:</div>
+          <div className="ejemplo-row">
+            <div className="ejemplo-input">6.5</div>
+            <div className="ejemplo-input">25</div>
+            <div className="ejemplo-label">%</div>
+          </div>
+        </div>
+
         <div className="notas-section">
           {notas.map((nota) => (
             <div key={nota.id} className="nota-row">
