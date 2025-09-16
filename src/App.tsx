@@ -12,6 +12,9 @@ function App() {
   const [porcentajeExamen, setPorcentajeExamen] = useState(30);
   const [notaExamen, setNotaExamen] = useState(0);
   const [notaAprobacion, setNotaAprobacion] = useState(40);
+  const [evaluacionesFuturas, setEvaluacionesFuturas] = useState(0);
+  const [porcentajeFuturo, setPorcentajeFuturo] = useState(0);
+  const [darkMode, setDarkMode] = useState(false);
 
   const porcentajeTotal = useMemo(() => 
     notas.reduce((sum, nota) => sum + nota.porcentaje, 0), 
@@ -36,25 +39,104 @@ function App() {
 
   const promedioFinal = useMemo(() => {
     if (!modoExamen) return promedioActual;
-    
+
     const porcentajeNotasUsado = notas.reduce((sum, nota) => sum + nota.porcentaje, 0);
-    
+
     if (porcentajeNotasUsado === 0) {
       return (notaExamen * porcentajeExamen / 100);
     }
-    
-    const promedioNotasSinExamen = notas.reduce((acc, nota) => 
+
+    const promedioNotasSinExamen = notas.reduce((acc, nota) =>
       acc + (nota.valor * nota.porcentaje / 100), 0
     );
-    
+
     const porcentajeRestante = 100 - porcentajeExamen;
     const factorAjuste = porcentajeRestante / porcentajeNotasUsado;
-    
+
     const promedioNotasAjustado = promedioNotasSinExamen * factorAjuste;
     const promedioExamen = (notaExamen * porcentajeExamen / 100);
-    
+
     return promedioNotasAjustado + promedioExamen;
   }, [notas, modoExamen, porcentajeExamen, notaExamen]);
+
+  const simuladorAvanzado = useMemo(() => {
+    const porcentajeUsado = notas.reduce((sum, nota) => sum + nota.porcentaje, 0);
+    const porcentajeExamenUsado = modoExamen ? porcentajeExamen : 0;
+    const porcentajeDisponibleTotal = 100 - porcentajeUsado - porcentajeExamenUsado;
+
+    if (evaluacionesFuturas === 0 || porcentajeFuturo === 0 || porcentajeFuturo > porcentajeDisponibleTotal) {
+      return null;
+    }
+
+    const promedioHastaAhora = modoExamen ? promedioFinal : promedioActual;
+    const porcentajeAcumulado = porcentajeUsado + porcentajeExamenUsado;
+
+    const notaNecesariaFutura = (notaAprobacion - (promedioHastaAhora * porcentajeAcumulado / 100)) / (porcentajeFuturo / 100);
+
+    const esPosible = notaNecesariaFutura <= 70; // Asumiendo nota máxima 70
+
+    return {
+      notaNecesaria: Math.max(0, notaNecesariaFutura),
+      esPosible,
+      porcentajeDisponible: porcentajeDisponibleTotal
+    };
+  }, [notas, modoExamen, porcentajeExamen, promedioActual, promedioFinal, evaluacionesFuturas, porcentajeFuturo, notaAprobacion]);
+
+  const calculoRecuperacion = useMemo(() => {
+    const porcentajeUsado = notas.reduce((sum, nota) => sum + nota.porcentaje, 0);
+    const porcentajeExamenUsado = modoExamen ? porcentajeExamen : 0;
+    const porcentajeRestante = 100 - porcentajeUsado - porcentajeExamenUsado;
+
+    if (porcentajeRestante <= 0) {
+      const promedioFinalActual = modoExamen ? promedioFinal : promedioActual;
+      return {
+        esPosible: promedioFinalActual >= notaAprobacion,
+        mensaje: promedioFinalActual >= notaAprobacion ? "¡Ya tienes la nota para aprobar!" : "No es posible aprobar con las notas actuales",
+        notaMinimaNecesaria: 0,
+        porcentajeRestante: 0
+      };
+    }
+
+    const promedioHastaAhora = modoExamen ? promedioFinal : promedioActual;
+    const porcentajeAcumulado = porcentajeUsado + porcentajeExamenUsado;
+
+    const notaMinimaNecesaria = (notaAprobacion - (promedioHastaAhora * porcentajeAcumulado / 100)) / (porcentajeRestante / 100);
+
+    const esPosible = notaMinimaNecesaria <= 70; // Asumiendo nota máxima 70
+
+    return {
+      esPosible,
+      mensaje: esPosible
+        ? `Necesitas promedio mínimo de ${Math.max(0, notaMinimaNecesaria).toFixed(1)} en el ${porcentajeRestante}% restante`
+        : `Imposible aprobar. Necesitarías ${notaMinimaNecesaria.toFixed(1)} en el ${porcentajeRestante}% restante`,
+      notaMinimaNecesaria: Math.max(0, notaMinimaNecesaria),
+      porcentajeRestante
+    };
+  }, [notas, modoExamen, porcentajeExamen, promedioActual, promedioFinal, notaAprobacion]);
+
+  const getValidationState = useCallback((nota: Nota) => {
+    if (nota.valor === 0 && nota.porcentaje === 0) return 'neutral';
+
+    const isNotaValid = nota.valor >= 10 && nota.valor <= 70;
+    const isPorcentajeValid = nota.porcentaje > 0 && nota.porcentaje <= porcentajeDisponible;
+
+    if (isNotaValid && isPorcentajeValid) return 'valid';
+    if (!isNotaValid || !isPorcentajeValid) return 'invalid';
+
+    return 'neutral';
+  }, [porcentajeDisponible]);
+
+  const getPorcentajeValidation = useCallback(() => {
+    if (porcentajeTotal === 0) return 'neutral';
+
+    const limite = modoExamen ? porcentajeDisponible : 100;
+
+    if (porcentajeTotal === limite) return 'valid';
+    if (porcentajeTotal > limite) return 'invalid';
+    if (porcentajeTotal < limite && porcentajeTotal > 0) return 'warning';
+
+    return 'neutral';
+  }, [porcentajeTotal, modoExamen, porcentajeDisponible]);
 
   const agregarNota = useCallback(() => {
     const nuevaNota: Nota = {
@@ -86,66 +168,87 @@ function App() {
     setPorcentajeExamen(30);
     setNotaExamen(0);
     setNotaAprobacion(40);
+    setEvaluacionesFuturas(0);
+    setPorcentajeFuturo(0);
   }, []);
 
 
   return (
-    <div className="calculadora">
+    <div className={`calculadora ${darkMode ? 'dark-mode' : ''}`}>
       <div className="header">
-        <h1>Calculadora de Ponderaciones</h1>
-        <p>Calcula tu promedio ponderado de notas</p>
+        <div className="header-content">
+          <div>
+            <h1>Calculadora de Ponderaciones</h1>
+            <p>Calcula tu promedio ponderado de notas</p>
+          </div>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="dark-mode-toggle"
+            aria-label="Cambiar tema"
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+        </div>
       </div>
 
       <div className="container">
         <div className="ejemplo-section">
           <div className="ejemplo-titulo">Ejemplo de formato:</div>
           <div className="ejemplo-row">
-            <div className="ejemplo-input">6.5</div>
+            <div className="ejemplo-input">65</div>
             <div className="ejemplo-input">25</div>
             <div className="ejemplo-label">%</div>
           </div>
         </div>
 
         <div className="notas-section">
-          {notas.map((nota) => (
-            <div key={nota.id} className="nota-row">
-              <input
-                type="number"
-                placeholder="Nota"
-                min="1"
-                max="7"
-                step="0.1"
-                value={nota.valor || ''}
-                onChange={(e) => actualizarNota(nota.id, 'valor', parseFloat(e.target.value) || 0)}
-                className="input-nota"
-              />
-              
-              <input
-                type="number"
-                placeholder="Porcentaje"
-                min="0"
-                max="100"
-                step="1"
-                value={nota.porcentaje || ''}
-                onChange={(e) => actualizarNota(nota.id, 'porcentaje', parseInt(e.target.value) || 0)}
-                className="input-porcentaje"
-              />
-              
-              {notas.length > 3 && (
-                <button
-                  onClick={() => eliminarNota(nota.id)}
-                  className="btn-eliminar"
-                  aria-label="Eliminar nota"
-                >
-                  ×
-                </button>
-              )}
-            </div>
-          ))}
+          {notas.map((nota) => {
+            const validationState = getValidationState(nota);
+            return (
+              <div key={nota.id} className="nota-row">
+                <input
+                  type="number"
+                  placeholder="Nota"
+                  min="10"
+                  max="70"
+                  step="0.1"
+                  value={nota.valor || ''}
+                  onChange={(e) => actualizarNota(nota.id, 'valor', parseFloat(e.target.value) || 0)}
+                  className={`input-nota validation-${validationState}`}
+                />
+
+                <input
+                  type="number"
+                  placeholder="Porcentaje"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value={nota.porcentaje || ''}
+                  onChange={(e) => actualizarNota(nota.id, 'porcentaje', parseInt(e.target.value) || 0)}
+                  className={`input-porcentaje validation-${validationState}`}
+                />
+
+                {notas.length > 3 && (
+                  <button
+                    onClick={() => eliminarNota(nota.id)}
+                    className="btn-eliminar"
+                    aria-label="Eliminar nota"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            );
+          })}
 
           <button onClick={agregarNota} className="btn-agregar">
             + Agregar Nota
           </button>
+
+          <div className={`porcentaje-total validation-${getPorcentajeValidation()}`}>
+            <span>Total: {porcentajeTotal}%</span>
+            {modoExamen && <span> (Disponible: {porcentajeDisponible}%)</span>}
+          </div>
         </div>
 
         <div className="controles">
@@ -231,6 +334,61 @@ function App() {
                 </div>
               </div>
             )}
+          </div>
+
+          <div className="simulador-section">
+            <h3>Simulador Avanzado</h3>
+            <div className="simulador-descripcion">
+              <p>🎯 <strong>Simula escenarios específicos:</strong> Elige cuántas evaluaciones y qué porcentaje quieres simular.</p>
+              <p><strong>Ejemplo:</strong> "De lo que me queda, solo quiero simular 2 pruebas que valen 25%" → Pon: 2 evaluaciones, 25%</p>
+            </div>
+            <div className="simulador-inputs">
+              <div className="input-group">
+                <label>Evaluaciones futuras</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="10"
+                  placeholder="ej: 3"
+                  value={evaluacionesFuturas || ''}
+                  onChange={(e) => setEvaluacionesFuturas(parseInt(e.target.value) || 0)}
+                  className="input-simulador"
+                />
+              </div>
+
+              <div className="input-group">
+                <label>% Total futuro</label>
+                <input
+                  type="number"
+                  min="0"
+                  max="100"
+                  placeholder="ej: 30"
+                  value={porcentajeFuturo || ''}
+                  onChange={(e) => setPorcentajeFuturo(parseInt(e.target.value) || 0)}
+                  className="input-simulador"
+                />
+              </div>
+            </div>
+
+            {simuladorAvanzado && (
+              <div className="simulador-resultado">
+                <div className={`resultado-simulador ${simuladorAvanzado.esPosible ? 'posible' : 'imposible'}`}>
+                  {simuladorAvanzado.esPosible ? '✅' : '❌'}
+                  Necesitas promedio de <strong>{simuladorAvanzado.notaNecesaria.toFixed(1)}</strong> en {evaluacionesFuturas} evaluaciones ({porcentajeFuturo}%)
+                </div>
+                <small>Porcentaje disponible: {simuladorAvanzado.porcentajeDisponible}%</small>
+              </div>
+            )}
+          </div>
+
+          <div className="recuperacion-section">
+            <h3>Análisis de Recuperación</h3>
+            <div className="recuperacion-descripcion">
+              <p>🔍 <strong>Análisis automático:</strong> Calcula si puedes aprobar usando TODO el porcentaje restante.</p>
+            </div>
+            <div className={`recuperacion-resultado ${calculoRecuperacion.esPosible ? 'posible' : 'imposible'}`}>
+              {calculoRecuperacion.esPosible ? '✅' : '❌'} {calculoRecuperacion.mensaje}
+            </div>
           </div>
 
           <button onClick={limpiar} className="btn-limpiar">
