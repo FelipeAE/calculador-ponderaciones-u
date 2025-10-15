@@ -13,7 +13,10 @@
       "Bash(git rebase:*)",
       "WebFetch(domain:github.com)",
       "Bash(gh workflow:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(npm run test)",
+      "Bash(npm install:*)",
+      "Bash(npm run test:*)"
     ],
     "deny": [],
     "ask": []

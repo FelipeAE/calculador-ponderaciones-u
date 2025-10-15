@@ -81,17 +81,40 @@ describe('Cálculos de Promedio', () => {
         { id: '1', nombre: '', valor: 35, porcentaje: 100 }
       ];
       const resultado = calcularNotaNecesariaExamen(notas, 50, 40);
-      // Si necesitas 40 total y tienes 35 en el 50% no examen
-      // Necesitas: (40 - 35*1) / (50/100) = 5 / 0.5 = 10
+      // promedioNotasAjustado = 35 * 0.5 = 17.5
+      // notaNecesaria = (40 - 17.5) * 100 / 50 = 45
+      expect(resultado).toBe(45);
+    });
+
+    it('debe retornar 0 si ya estás aprobado sin examen', () => {
+      const notas: Nota[] = [
+        { id: '1', nombre: '', valor: 70, porcentaje: 100 }
+      ];
+      const resultado = calcularNotaNecesariaExamen(notas, 50, 40);
+      // promedioNotasAjustado = 70 * 0.5 = 35
+      // notaNecesaria = (40 - 35) * 100 / 50 = 10
+      // Pero si es menor que 0, retorna 0
       expect(resultado).toBe(10);
     });
 
-    it('debe retornar 0 si no es necesaria nota adicional', () => {
+    it('debe retornar 0 si ya estás muy por encima', () => {
       const notas: Nota[] = [
-        { id: '1', nombre: '', valor: 50, porcentaje: 100 }
+        { id: '1', nombre: '', valor: 60, porcentaje: 100 }
+      ];
+      const resultado = calcularNotaNecesariaExamen(notas, 50, 35);
+      // promedioNotasAjustado = 60 * 0.5 = 30
+      // notaNecesaria = (35 - 30) * 100 / 50 = 10
+      // Math.max(0, 10) = 10
+      expect(resultado).toBe(10);
+    });
+
+    it('debe retornar solo nota de examen si no hay otras notas', () => {
+      const notas: Nota[] = [
+        { id: '1', nombre: '', valor: 0, porcentaje: 0 }
       ];
       const resultado = calcularNotaNecesariaExamen(notas, 50, 40);
-      expect(resultado).toBe(0);
+      // notaAprobacion * 100 / porcentajeExamen = 40 * 100 / 50 = 80
+      expect(resultado).toBe(80);
     });
   });
 });
