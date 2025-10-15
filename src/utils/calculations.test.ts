@@ -8,9 +8,10 @@ import {
   calcularPromedioActual,
   calcularPromedioFinal,
   calcularNotaNecesariaExamen,
+  calcularSimuladorAvanzado,
+  calcularRecuperacion,
   calcularPorcentajeTotal,
-  calcularPorcentajeDisponible,
-  calcularRecuperacion
+  calcularPorcentajeDisponible
 } from './calculations';
 import { Nota } from '../types';
 
@@ -173,5 +174,69 @@ describe('Análisis de Recuperación', () => {
     ];
     const resultado = calcularRecuperacion(notas, false, 0, 50, 50, 40);
     expect(resultado.esPosible).toBe(true);
+  });
+
+  it('debe calcular correctamente con modo examen', () => {
+    const notas: Nota[] = [
+      { id: '1', nombre: '', valor: 45, porcentaje: 70 }
+    ];
+    const promedioActual = 45;
+    const promedioFinal = 50;
+    const resultado = calcularRecuperacion(notas, true, 30, promedioActual, promedioFinal, 40);
+    expect(resultado.porcentajeRestante).toBe(0);
+  });
+});
+
+describe('Simulador Avanzado', () => {
+  it('debe calcular nota necesaria para escenarios futuros', () => {
+    const notas: Nota[] = [
+      { id: '1', nombre: '', valor: 50, porcentaje: 50 }
+    ];
+    const resultado = calcularSimuladorAvanzado(
+      notas,
+      false,
+      0,
+      2,
+      30,
+      40,
+      50,
+      50
+    );
+    expect(resultado).not.toBeNull();
+    expect(resultado?.esPosible).toBe(true);
+  });
+
+  it('debe retornar null si los parámetros son inválidos', () => {
+    const notas: Nota[] = [
+      { id: '1', nombre: '', valor: 50, porcentaje: 50 }
+    ];
+    const resultado = calcularSimuladorAvanzado(
+      notas,
+      false,
+      0,
+      0,
+      0,
+      40,
+      50,
+      50
+    );
+    expect(resultado).toBeNull();
+  });
+
+  it('debe retornar null si porcentaje futuro excede disponible', () => {
+    const notas: Nota[] = [
+      { id: '1', nombre: '', valor: 50, porcentaje: 80 }
+    ];
+    const resultado = calcularSimuladorAvanzado(
+      notas,
+      false,
+      0,
+      2,
+      50,
+      40,
+      50,
+      50
+    );
+    expect(resultado).toBeNull();
   });
 });
