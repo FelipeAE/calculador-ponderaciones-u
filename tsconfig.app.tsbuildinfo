@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/types.ts"],"version":"5.9.2"}
+{"root":["./src/app.tsx","./src/main.tsx","./src/types.ts","./src/utils/calculations.ts","./src/utils/validations.ts"],"version":"5.9.2"}

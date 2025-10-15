@@ -1,6 +1,37 @@
+/* ========================================
+   ESTILOS BASE Y LAYOUT
+   ======================================== */
+
+:root {
+  --primary: #667eea;
+  --primary-dark: #764ba2;
+  --text-dark: #374151;
+  --text-light: #64748b;
+  --border-light: #e5e7eb;
+  --bg-light: #f8fafc;
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
 .calculadora {
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  box-sizing: border-box;
 }
 
 .header {
@@ -13,27 +44,43 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
+  width: 100%;
+  gap: 2rem;
 }
 
 .header h1 {
   font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0;
   font-weight: 700;
 }
 
 .header p {
+  margin: 0;
   opacity: 0.9;
   font-size: 1.1rem;
 }
+
+/* ========================================
+   CONTENEDOR PRINCIPAL
+   ======================================== */
 
 .container {
   background: white;
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  flex: 1;
 }
+
+/* ========================================
+   SECCIÓN DE EJEMPLO
+   ======================================== */
 
 .ejemplo-section {
   background: #f8fafc;
@@ -77,15 +124,12 @@
   font-size: 1rem;
 }
 
+/* ========================================
+   SECCIÓN DE NOTAS
+   ======================================== */
+
 .notas-section {
   margin-bottom: 2rem;
-}
-
-.nota-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  align-items: center;
 }
 
 .nota-row {
@@ -96,7 +140,6 @@
   align-items: center;
 }
 
-
 .input-nota,
 .input-porcentaje {
   padding: 0.75rem;
@@ -105,8 +148,17 @@
   font-size: 1rem;
   transition: all 0.2s ease;
   text-align: center;
+  box-sizing: border-box;
 }
 
+.input-nota:focus,
+.input-porcentaje:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Validación de inputs */
 .validation-valid {
   border-color: #10b981 !important;
   background-color: #ecfdf5;
@@ -127,26 +179,21 @@
   background-color: white;
 }
 
-.input-nota:focus,
-.input-porcentaje:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
+/* Botón eliminar */
 .btn-eliminar {
   background: #ef4444;
   color: white;
   border: none;
   border-radius: 50%;
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .btn-eliminar:hover {
@@ -154,6 +201,11 @@
   transform: scale(1.1);
 }
 
+.btn-eliminar:active {
+  transform: scale(0.95);
+}
+
+/* Botón agregar */
 .btn-agregar {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -165,6 +217,7 @@
   transition: all 0.2s ease;
   width: 100%;
   font-weight: 600;
+  box-sizing: border-box;
 }
 
 .btn-agregar:hover {
@@ -172,18 +225,62 @@
   box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
 }
 
+.btn-agregar:active {
+  transform: translateY(0);
+}
+
+/* Porcentaje total */
+.porcentaje-total {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.porcentaje-total.validation-valid {
+  background: #ecfdf5;
+  border-color: #10b981;
+  color: #065f46;
+}
+
+.porcentaje-total.validation-invalid {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+.porcentaje-total.validation-warning {
+  background: #fffbeb;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.porcentaje-total.validation-neutral {
+  background: #f8fafc;
+  border-color: #e5e7eb;
+  color: #64748b;
+}
+
+/* ========================================
+   CONTROLES
+   ======================================== */
+
 .controles {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 1.5rem;
   margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
 }
 
 .modo-examen {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
   flex-wrap: wrap;
 }
@@ -194,6 +291,7 @@
   cursor: pointer;
   font-weight: 500;
   gap: 0.5rem;
+  user-select: none;
 }
 
 .checkbox-container input[type="checkbox"] {
@@ -207,19 +305,20 @@
   border-radius: 4px;
   position: relative;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .checkbox-container input:checked + .checkmark {
   background: #667eea;
 }
 
-.checkmark:after {
+.checkmark::after {
   content: "";
   position: absolute;
   display: none;
 }
 
-.checkbox-container input:checked + .checkmark:after {
+.checkbox-container input:checked + .checkmark::after {
   display: block;
   left: 7px;
   top: 3px;
@@ -229,6 +328,10 @@
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
+
+/* ========================================
+   SECCIÓN DE EXAMEN
+   ======================================== */
 
 .examen-section {
   background: #374151;
@@ -256,6 +359,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  box-sizing: border-box;
 }
 
 .input-group label {
@@ -275,6 +379,8 @@
   font-size: 1.5rem;
   text-align: center;
   font-weight: 600;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .input-examen-nota:focus,
@@ -301,63 +407,9 @@
   text-align: center;
 }
 
-.btn-limpiar {
-  background: #6b7280;
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-weight: 500;
-}
-
-.btn-limpiar:hover {
-  background: #4b5563;
-  transform: translateY(-1px);
-}
-
-.alerta {
-  background: #fef3c7;
-  border: 2px solid #f59e0b;
-  border-radius: 10px;
-  padding: 1rem;
-  margin-bottom: 2rem;
-  color: #92400e;
-  font-weight: 500;
-}
-
-.resultados {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.resultado {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 2rem;
-  border-radius: 15px;
-  text-align: center;
-}
-
-.resultado h3 {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  opacity: 0.9;
-  font-weight: 500;
-}
-
-.resultado .valor {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.resultado small {
-  opacity: 0.8;
-  font-size: 0.9rem;
-}
+/* ========================================
+   SIMULADOR Y RECUPERACIÓN
+   ======================================== */
 
 .simulador-section,
 .recuperacion-section {
@@ -371,12 +423,13 @@
 .simulador-section h3,
 .recuperacion-section h3 {
   color: #374151;
-  margin-bottom: 1rem;
+  margin: 0 0 1rem 0;
   font-size: 1.2rem;
   font-weight: 600;
 }
 
-.simulador-descripcion {
+.simulador-descripcion,
+.recuperacion-descripcion {
   background: #f1f5f9;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
@@ -384,29 +437,17 @@
   margin-bottom: 1.5rem;
   font-size: 0.9rem;
   line-height: 1.5;
+  color: #374151;
 }
 
-.simulador-descripcion p {
-  margin: 0;
-  margin-bottom: 0.5rem;
-}
-
-.simulador-descripcion p:last-child {
-  margin-bottom: 0;
-}
-
-.recuperacion-descripcion {
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
+.simulador-descripcion p,
 .recuperacion-descripcion p {
-  margin: 0;
+  margin: 0 0 0.5rem 0;
+}
+
+.simulador-descripcion p:last-child,
+.recuperacion-descripcion p:last-child {
+  margin-bottom: 0;
 }
 
 .simulador-inputs {
@@ -423,6 +464,7 @@
   font-size: 1rem;
   text-align: center;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .input-simulador:focus {
@@ -440,9 +482,12 @@
 
 .resultado-simulador {
   font-weight: 600;
-  padding: 0.5rem;
+  padding: 0.75rem;
   border-radius: 8px;
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .resultado-simulador.posible {
@@ -462,6 +507,9 @@
   border-radius: 10px;
   padding: 1rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .recuperacion-resultado.posible {
@@ -476,41 +524,90 @@
   border: 2px solid #fecaca;
 }
 
-.porcentaje-total {
-  background: white;
-  border: 2px solid #e5e7eb;
+/* ========================================
+   ALERTAS
+   ======================================== */
+
+.alerta {
+  background: #fef3c7;
+  border: 2px solid #f59e0b;
   border-radius: 10px;
   padding: 1rem;
-  text-align: center;
-  font-weight: 600;
-  font-size: 1.1rem;
-  margin-top: 1rem;
-  transition: all 0.2s ease;
-}
-
-.porcentaje-total.validation-valid {
-  background: #ecfdf5;
-  border-color: #10b981;
-  color: #065f46;
-}
-
-.porcentaje-total.validation-invalid {
-  background: #fef2f2;
-  border-color: #ef4444;
-  color: #991b1b;
-}
-
-.porcentaje-total.validation-warning {
-  background: #fffbeb;
-  border-color: #f59e0b;
+  margin-bottom: 2rem;
   color: #92400e;
+  font-weight: 500;
 }
 
-.porcentaje-total.validation-neutral {
-  background: #f8fafc;
-  border-color: #e5e7eb;
-  color: #64748b;
+/* ========================================
+   RESULTADOS
+   ======================================== */
+
+.resultados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
+
+.resultado {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+}
+
+.resultado h3 {
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.resultado .valor {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  line-height: 1;
+}
+
+.resultado small {
+  opacity: 0.8;
+  font-size: 0.9rem;
+  display: block;
+}
+
+/* ========================================
+   BOTONES DE CONTROL
+   ======================================== */
+
+.btn-limpiar {
+  background: #6b7280;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-limpiar:hover {
+  background: #4b5563;
+  transform: translateY(-1px);
+}
+
+.btn-limpiar:active {
+  transform: translateY(0);
+}
+
+/* ========================================
+   DARK MODE TOGGLE
+   ======================================== */
 
 .dark-mode-toggle {
   background: rgba(255, 255, 255, 0.2);
@@ -525,6 +622,7 @@
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(10px);
+  flex-shrink: 0;
 }
 
 .dark-mode-toggle:hover {
@@ -532,7 +630,14 @@
   transform: scale(1.1);
 }
 
-/* Dark Mode Styles */
+.dark-mode-toggle:active {
+  transform: scale(0.95);
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
 .dark-mode {
   background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e40af 100%);
 }
@@ -633,6 +738,20 @@
   border-color: #6b7280;
 }
 
+.dark-mode .resultado-simulador.posible,
+.dark-mode .recuperacion-resultado.posible {
+  background: #064e3b;
+  color: #d1fae5;
+  border-color: #059669;
+}
+
+.dark-mode .resultado-simulador.imposible,
+.dark-mode .recuperacion-resultado.imposible {
+  background: #7f1d1d;
+  color: #fecaca;
+  border-color: #dc2626;
+}
+
 .dark-mode .porcentaje-total {
   background: #374151;
   border-color: #4b5563;
@@ -669,61 +788,130 @@
   color: #fde68a;
 }
 
+.dark-mode .checkbox-container {
+  color: #f9fafb;
+}
+
+.dark-mode .checkmark {
+  background: #4b5563;
+  border-color: #6b7280;
+}
+
+.dark-mode .checkbox-container input:checked + .checkmark {
+  background: #667eea;
+  border-color: #667eea;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
 @media (max-width: 768px) {
+  .calculadora {
+    padding: 1rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
   .header h1 {
     font-size: 2rem;
   }
-  
+
+  .header p {
+    font-size: 1rem;
+  }
+
   .container {
     padding: 1.5rem;
-    margin: 0 1rem;
+    margin: 0;
   }
-  
-  .nota-row {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .input-nota,
-  .input-porcentaje {
-    width: 100%;
-  }
-  
+
   .nota-row {
     grid-template-columns: 1fr;
   }
-  
+
+  .btn-eliminar {
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+  }
+
+  .ejemplo-row {
+    gap: 0.75rem;
+  }
+
   .examen-inputs,
   .examen-info {
     grid-template-columns: 1fr;
-  }
-  
-  .controles {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .resultado .valor {
-    font-size: 2.5rem;
-  }
-  
-  .ejemplo-row {
-    grid-template-columns: 1fr 1fr auto;
-    max-width: 100%;
   }
 
   .simulador-inputs {
     grid-template-columns: 1fr;
   }
 
-  .header-content {
-    flex-direction: column;
+  .controles {
     gap: 1rem;
+  }
+
+  .resultado .valor {
+    font-size: 2.5rem;
+  }
+
+  .resultados {
+    grid-template-columns: 1fr;
   }
 
   .dark-mode-toggle {
     width: 45px;
     height: 45px;
     font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .calculadora {
+    padding: 0.75rem;
+  }
+
+  .header h1 {
+    font-size: 1.75rem;
+  }
+
+  .container {
+    padding: 1rem;
+    border-radius: 15px;
+  }
+
+  .header-content {
+    gap: 0.75rem;
+  }
+
+  .dark-mode-toggle {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .ejemplo-section {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .resultado .valor {
+    font-size: 2rem;
+  }
+
+  .resultado {
+    padding: 1.5rem;
+  }
+
+  .input-examen-nota,
+  .input-examen-porcentaje,
+  .input-aprobacion {
+    font-size: 1.2rem;
   }
 }

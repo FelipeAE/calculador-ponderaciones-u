@@ -10,7 +10,10 @@
       "Bash(git push:*)",
       "Bash(npm run build:*)",
       "Bash(git pull:*)",
-      "Bash(git rebase:*)"
+      "Bash(git rebase:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh workflow:*)",
+      "Bash(npm run lint)"
     ],
     "deny": [],
     "ask": []

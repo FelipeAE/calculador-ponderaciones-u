@@ -1,5 +1,15 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Nota } from './types';
+import {
+  calcularPromedioActual,
+  calcularPromedioFinal,
+  calcularNotaNecesariaExamen,
+  calcularSimuladorAvanzado,
+  calcularRecuperacion,
+  calcularPorcentajeTotal,
+  calcularPorcentajeDisponible
+} from './utils/calculations';
+import { getValidationState, getPorcentajeValidation } from './utils/validations';
 import './App.css';
 
 function App() {
@@ -16,127 +26,58 @@ function App() {
   const [porcentajeFuturo, setPorcentajeFuturo] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
 
-  const porcentajeTotal = useMemo(() => 
-    notas.reduce((sum, nota) => sum + nota.porcentaje, 0), 
+  const porcentajeTotal = useMemo(() =>
+    calcularPorcentajeTotal(notas),
     [notas]
   );
 
-  const porcentajeDisponible = useMemo(() => 
-    modoExamen ? 100 - porcentajeExamen : 100, 
+  const porcentajeDisponible = useMemo(() =>
+    calcularPorcentajeDisponible(modoExamen, porcentajeExamen),
     [modoExamen, porcentajeExamen]
   );
 
-  const promedioActual = useMemo(() => {
-    const notasValidas = notas.filter(nota => nota.porcentaje > 0);
-    if (notasValidas.length === 0) return 0;
-    
-    const suma = notasValidas.reduce((acc, nota) => 
-      acc + (nota.valor * nota.porcentaje / 100), 0
-    );
-    
-    return suma;
-  }, [notas]);
+  const promedioActual = useMemo(() =>
+    calcularPromedioActual(notas),
+    [notas]
+  );
 
-  const promedioFinal = useMemo(() => {
-    if (!modoExamen) return promedioActual;
+  const promedioFinal = useMemo(() =>
+    modoExamen
+      ? calcularPromedioFinal(notas, porcentajeExamen, notaExamen)
+      : promedioActual,
+    [notas, modoExamen, porcentajeExamen, notaExamen, promedioActual]
+  );
 
-    const porcentajeNotasUsado = notas.reduce((sum, nota) => sum + nota.porcentaje, 0);
+  const simuladorAvanzado = useMemo(() =>
+    calcularSimuladorAvanzado(
+      notas,
+      modoExamen,
+      porcentajeExamen,
+      evaluacionesFuturas,
+      porcentajeFuturo,
+      notaAprobacion,
+      promedioActual,
+      promedioFinal
+    ),
+    [notas, modoExamen, porcentajeExamen, evaluacionesFuturas, porcentajeFuturo, notaAprobacion, promedioActual, promedioFinal]
+  );
 
-    if (porcentajeNotasUsado === 0) {
-      return (notaExamen * porcentajeExamen / 100);
-    }
+  const calculoRecuperacion = useMemo(() =>
+    calcularRecuperacion(
+      notas,
+      modoExamen,
+      porcentajeExamen,
+      promedioActual,
+      promedioFinal,
+      notaAprobacion
+    ),
+    [notas, modoExamen, porcentajeExamen, promedioActual, promedioFinal, notaAprobacion]
+  );
 
-    const promedioNotasSinExamen = notas.reduce((acc, nota) =>
-      acc + (nota.valor * nota.porcentaje / 100), 0
-    );
-
-    const porcentajeRestante = 100 - porcentajeExamen;
-    const factorAjuste = porcentajeRestante / porcentajeNotasUsado;
-
-    const promedioNotasAjustado = promedioNotasSinExamen * factorAjuste;
-    const promedioExamen = (notaExamen * porcentajeExamen / 100);
-
-    return promedioNotasAjustado + promedioExamen;
-  }, [notas, modoExamen, porcentajeExamen, notaExamen]);
-
-  const simuladorAvanzado = useMemo(() => {
-    const porcentajeUsado = notas.reduce((sum, nota) => sum + nota.porcentaje, 0);
-    const porcentajeExamenUsado = modoExamen ? porcentajeExamen : 0;
-    const porcentajeDisponibleTotal = 100 - porcentajeUsado - porcentajeExamenUsado;
-
-    if (evaluacionesFuturas === 0 || porcentajeFuturo === 0 || porcentajeFuturo > porcentajeDisponibleTotal) {
-      return null;
-    }
-
-    const promedioHastaAhora = modoExamen ? promedioFinal : promedioActual;
-    const porcentajeAcumulado = porcentajeUsado + porcentajeExamenUsado;
-
-    const notaNecesariaFutura = (notaAprobacion - (promedioHastaAhora * porcentajeAcumulado / 100)) / (porcentajeFuturo / 100);
-
-    const esPosible = notaNecesariaFutura <= 70; // Asumiendo nota máxima 70
-
-    return {
-      notaNecesaria: Math.max(0, notaNecesariaFutura),
-      esPosible,
-      porcentajeDisponible: porcentajeDisponibleTotal
-    };
-  }, [notas, modoExamen, porcentajeExamen, promedioActual, promedioFinal, evaluacionesFuturas, porcentajeFuturo, notaAprobacion]);
-
-  const calculoRecuperacion = useMemo(() => {
-    const porcentajeUsado = notas.reduce((sum, nota) => sum + nota.porcentaje, 0);
-    const porcentajeExamenUsado = modoExamen ? porcentajeExamen : 0;
-    const porcentajeRestante = 100 - porcentajeUsado - porcentajeExamenUsado;
-
-    if (porcentajeRestante <= 0) {
-      const promedioFinalActual = modoExamen ? promedioFinal : promedioActual;
-      return {
-        esPosible: promedioFinalActual >= notaAprobacion,
-        mensaje: promedioFinalActual >= notaAprobacion ? "¡Ya tienes la nota para aprobar!" : "No es posible aprobar con las notas actuales",
-        notaMinimaNecesaria: 0,
-        porcentajeRestante: 0
-      };
-    }
-
-    const promedioHastaAhora = modoExamen ? promedioFinal : promedioActual;
-    const porcentajeAcumulado = porcentajeUsado + porcentajeExamenUsado;
-
-    const notaMinimaNecesaria = (notaAprobacion - (promedioHastaAhora * porcentajeAcumulado / 100)) / (porcentajeRestante / 100);
-
-    const esPosible = notaMinimaNecesaria <= 70; // Asumiendo nota máxima 70
-
-    return {
-      esPosible,
-      mensaje: esPosible
-        ? `Necesitas promedio mínimo de ${Math.max(0, notaMinimaNecesaria).toFixed(1)} en el ${porcentajeRestante}% restante`
-        : `Imposible aprobar. Necesitarías ${notaMinimaNecesaria.toFixed(1)} en el ${porcentajeRestante}% restante`,
-      notaMinimaNecesaria: Math.max(0, notaMinimaNecesaria),
-      porcentajeRestante
-    };
-  }, [notas, modoExamen, porcentajeExamen, promedioActual, promedioFinal, notaAprobacion]);
-
-  const getValidationState = useCallback((nota: Nota) => {
-    if (nota.valor === 0 && nota.porcentaje === 0) return 'neutral';
-
-    const isNotaValid = nota.valor >= 10 && nota.valor <= 70;
-    const isPorcentajeValid = nota.porcentaje > 0 && nota.porcentaje <= porcentajeDisponible;
-
-    if (isNotaValid && isPorcentajeValid) return 'valid';
-    if (!isNotaValid || !isPorcentajeValid) return 'invalid';
-
-    return 'neutral';
-  }, [porcentajeDisponible]);
-
-  const getPorcentajeValidation = useCallback(() => {
-    if (porcentajeTotal === 0) return 'neutral';
-
-    const limite = modoExamen ? porcentajeDisponible : 100;
-
-    if (porcentajeTotal === limite) return 'valid';
-    if (porcentajeTotal > limite) return 'invalid';
-    if (porcentajeTotal < limite && porcentajeTotal > 0) return 'warning';
-
-    return 'neutral';
-  }, [porcentajeTotal, modoExamen, porcentajeDisponible]);
+  const notaNecesariaExamen = useMemo(() =>
+    calcularNotaNecesariaExamen(notas, porcentajeExamen, notaAprobacion),
+    [notas, porcentajeExamen, notaAprobacion]
+  );
 
   const agregarNota = useCallback(() => {
     const nuevaNota: Nota = {
@@ -203,7 +144,7 @@ function App() {
 
         <div className="notas-section">
           {notas.map((nota) => {
-            const validationState = getValidationState(nota);
+            const validationState = getValidationState(nota, porcentajeDisponible);
             return (
               <div key={nota.id} className="nota-row">
                 <input
@@ -245,7 +186,7 @@ function App() {
             + Agregar Nota
           </button>
 
-          <div className={`porcentaje-total validation-${getPorcentajeValidation()}`}>
+          <div className={`porcentaje-total validation-${getPorcentajeValidation(porcentajeTotal, modoExamen, porcentajeDisponible)}`}>
             <span>Total: {porcentajeTotal}%</span>
             {modoExamen && <span> (Disponible: {porcentajeDisponible}%)</span>}
           </div>
@@ -308,25 +249,8 @@ function App() {
                   <div className="nota-necesaria">
                     <label>Nota que necesitas</label>
                     <div className="valor-necesario">
-                      {modoExamen && notaAprobacion > 0 ? 
-                        (() => {
-                          const porcentajeNotasUsado = notas.reduce((sum, nota) => sum + nota.porcentaje, 0);
-                          const porcentajeRestante = 100 - porcentajeExamen;
-                          
-                          if (porcentajeNotasUsado === 0) {
-                            return Math.max(0, ((notaAprobacion * 100 / porcentajeExamen))).toFixed(1);
-                          }
-                          
-                          const promedioNotasSinExamen = notas.reduce((acc, nota) => 
-                            acc + (nota.valor * nota.porcentaje / 100), 0
-                          );
-                          
-                          const factorAjuste = porcentajeRestante / porcentajeNotasUsado;
-                          const promedioNotasAjustado = promedioNotasSinExamen * factorAjuste;
-                          
-                          const notaNecesaria = (notaAprobacion - promedioNotasAjustado) * 100 / porcentajeExamen;
-                          return Math.max(0, notaNecesaria).toFixed(1);
-                        })()
+                      {modoExamen && notaAprobacion > 0
+                        ? notaNecesariaExamen.toFixed(1)
                         : '0'
                       }
                     </div>
