@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { Nota } from './types';
+import { Theme } from './types/theme';
 import {
   calcularPromedioActual,
   calcularPromedioFinal,
@@ -16,6 +17,7 @@ import { ExamenSection } from './components/ExamenSection';
 import { SimuladorSection } from './components/SimuladorSection';
 import { RecuperacionSection } from './components/RecuperacionSection';
 import { ResultadosSection } from './components/ResultadosSection';
+import { ThemeSelector } from './components/ThemeSelector';
 import './App.css';
 
 function App() {
@@ -32,7 +34,7 @@ function App() {
   const [notaAprobacion, setNotaAprobacion] = useLocalStorage('calc_notaAprobacion', 40);
   const [evaluacionesFuturas, setEvaluacionesFuturas] = useLocalStorage('calc_evaluacionesFuturas', 0);
   const [porcentajeFuturo, setPorcentajeFuturo] = useLocalStorage('calc_porcentajeFuturo', 0);
-  const [darkMode, setDarkMode] = useLocalStorage('calc_darkMode', false);
+  const [theme, setTheme] = useLocalStorage<Theme>('calc_theme', 'light');
 
   // Cálculos memoizados para optimización de performance
   const porcentajeTotal = useMemo(() =>
@@ -124,20 +126,14 @@ function App() {
   }, [setNotas, setModoExamen, setPorcentajeExamen, setNotaExamen, setNotaAprobacion, setEvaluacionesFuturas, setPorcentajeFuturo]);
 
   return (
-    <div className={`calculadora ${darkMode ? 'dark-mode' : ''}`}>
+    <div className={`calculadora theme-${theme}`}>
       <div className="header">
         <div className="header-content">
           <div>
             <h1>Calculadora de Ponderaciones</h1>
             <p>Calcula tu promedio ponderado de notas</p>
           </div>
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="dark-mode-toggle"
-            aria-label="Cambiar tema"
-          >
-            {darkMode ? '☀️' : '🌙'}
-          </button>
+          <ThemeSelector currentTheme={theme} onThemeChange={setTheme} />
         </div>
       </div>
 
