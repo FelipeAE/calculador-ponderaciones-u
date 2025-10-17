@@ -110,9 +110,9 @@ export const calcularSimuladorAvanzado = (
   }
 
   const promedioHastaAhora = modoExamen ? promedioFinal : promedioActual;
-  const porcentajeAcumulado = porcentajeUsado + porcentajeExamenUsado;
 
-  const notaNecesariaFutura = (notaAprobacion - (promedioHastaAhora * porcentajeAcumulado / 100)) / (porcentajeFuturo / 100);
+  // Similar al cálculo de recuperación: la nota necesaria considera que el promedio actual ya está ponderado
+  const notaNecesariaFutura = (notaAprobacion - promedioHastaAhora) / (porcentajeFuturo / 100);
 
   const esPosible = notaNecesariaFutura <= 70; // Nota máxima
 
@@ -160,9 +160,11 @@ export const calcularRecuperacion = (
   }
 
   const promedioHastaAhora = modoExamen ? promedioFinal : promedioActual;
-  const porcentajeAcumulado = porcentajeUsado + porcentajeExamenUsado;
 
-  const notaMinimaNecesaria = (notaAprobacion - (promedioHastaAhora * porcentajeAcumulado / 100)) / (porcentajeRestante / 100);
+  // La nota necesaria se calcula considerando que el promedio actual ya está ponderado
+  // Necesitamos: promedio final = (promedio actual + nota futura * (porcentajeRestante / 100)) = notaAprobacion
+  // Despejando: nota futura = (notaAprobacion - promedio actual) / (porcentajeRestante / 100)
+  const notaMinimaNecesaria = (notaAprobacion - promedioHastaAhora) / (porcentajeRestante / 100);
 
   const esPosible = notaMinimaNecesaria <= 70;
 
