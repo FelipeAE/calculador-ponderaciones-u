@@ -99,7 +99,9 @@ export const calcularSimuladorAvanzado = (
   promedioActual: number,
   promedioFinal: number
 ) => {
-  const porcentajeUsado = notas.reduce((sum, nota) => sum + nota.porcentaje, 0);
+  // Solo contar notas que tienen valor y porcentaje válidos
+  const notasValidas = notas.filter(nota => nota.valor > 0 && nota.porcentaje > 0);
+  const porcentajeUsado = notasValidas.reduce((sum, nota) => sum + nota.porcentaje, 0);
   const porcentajeExamenUsado = modoExamen ? porcentajeExamen : 0;
   const porcentajeDisponibleTotal = 100 - porcentajeUsado - porcentajeExamenUsado;
 
@@ -139,7 +141,9 @@ export const calcularRecuperacion = (
   promedioFinal: number,
   notaAprobacion: number
 ) => {
-  const porcentajeUsado = notas.reduce((sum, nota) => sum + nota.porcentaje, 0);
+  // Solo contar notas que tienen valor y porcentaje válidos
+  const notasValidas = notas.filter(nota => nota.valor > 0 && nota.porcentaje > 0);
+  const porcentajeUsado = notasValidas.reduce((sum, nota) => sum + nota.porcentaje, 0);
   const porcentajeExamenUsado = modoExamen ? porcentajeExamen : 0;
   const porcentajeRestante = 100 - porcentajeUsado - porcentajeExamenUsado;
 
