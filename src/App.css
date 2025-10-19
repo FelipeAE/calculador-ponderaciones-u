@@ -99,9 +99,9 @@ body {
 
 .ejemplo-row {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 1fr 0.8fr auto;
   gap: 1rem;
-  max-width: 300px;
+  max-width: 350px;
   margin: 0 auto;
   align-items: center;
 }
@@ -133,10 +133,19 @@ body {
 
 .nota-row {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 1fr 0.8fr auto;
   gap: 1rem;
   margin-bottom: 1rem;
   align-items: center;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.porcentaje-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .input-nota,
@@ -148,6 +157,12 @@ body {
   transition: all 0.2s ease;
   text-align: center;
   box-sizing: border-box;
+}
+
+.label-porcentaje {
+  font-weight: 600;
+  color: #64748b;
+  min-width: 20px;
 }
 
 .input-nota:focus,
@@ -337,7 +352,10 @@ body {
   border-radius: 15px;
   padding: 1.5rem;
   margin-top: 1rem;
+  margin-left: auto;
+  margin-right: auto;
   color: white;
+  max-width: 550px;
 }
 
 .examen-inputs {
@@ -1010,6 +1028,296 @@ body {
   }
 }
 
+/* ========================================
+   SECCIÓN DE EXPORTACIÓN
+   ======================================== */
+
+.export-section {
+  background: white;
+  border: 2px solid var(--border-light);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.export-header {
+  margin-bottom: 1.5rem;
+}
+
+.export-header h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-dark);
+  font-size: 1.3rem;
+}
+
+.export-header p {
+  margin: 0;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.export-warning {
+  background: #fef3c7;
+  border: 2px solid var(--warning);
+  border-radius: 10px;
+  padding: 1rem;
+  color: #92400e;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.export-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.btn-export {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-export:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-export:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-export:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-export-csv {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.btn-export-csv:hover:not(:disabled) {
+  box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-export-json {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.btn-export-json:hover:not(:disabled) {
+  box-shadow: 0 5px 15px rgba(245, 158, 11, 0.3);
+}
+
+.btn-export-txt {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.btn-export-txt:hover:not(:disabled) {
+  box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+}
+
+.export-info {
+  text-align: center;
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
+
+/* Dark theme for export section */
+.theme-dark .export-section {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.theme-dark .export-header h3 {
+  color: #f9fafb;
+}
+
+.theme-dark .export-header p {
+  color: #d1d5db;
+}
+
+.theme-dark .export-warning {
+  background: #78350f;
+  border-color: #d97706;
+  color: #fde68a;
+}
+
+.theme-dark .export-info {
+  color: #d1d5db;
+}
+
+/* Ocean theme for export section */
+.theme-ocean .export-section {
+  background: #e0f2fe;
+  border-color: #06b6d4;
+}
+
+.theme-ocean .export-header h3 {
+  color: #164e63;
+}
+
+.theme-ocean .export-header p {
+  color: #0e7490;
+}
+
+/* Forest theme for export section */
+.theme-forest .export-section {
+  background: #dcfce7;
+  border-color: #22c55e;
+}
+
+.theme-forest .export-header h3 {
+  color: #15803d;
+}
+
+.theme-forest .export-header p {
+  color: #16a34a;
+}
+
+/* Sunset theme for export section */
+.theme-sunset .export-section {
+  background: #fed7aa;
+  border-color: #f59e0b;
+}
+
+.theme-sunset .export-header h3 {
+  color: #ea580c;
+}
+
+.theme-sunset .export-header p {
+  color: #d97706;
+}
+
+/* ========================================
+   ESTILOS DE ERROR Y ESTADO
+   ======================================== */
+
+.error-message {
+  color: var(--error);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  padding: 0.25rem 0;
+}
+
+.status-icon {
+  margin-right: 0.5rem;
+}
+
+.estado-final {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.estado-final.aprobado {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.estado-final.reprobado {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.resultado.status-aprobado {
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+}
+
+.resultado.status-reprobado {
+  box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .calculadora {
+    padding: 1rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .header p {
+    font-size: 1rem;
+  }
+
+  .container {
+    padding: 1.5rem;
+    margin: 0;
+  }
+
+  .nota-row {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-eliminar {
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+  }
+
+  .ejemplo-row {
+    gap: 0.75rem;
+  }
+
+  .examen-inputs,
+  .examen-info {
+    grid-template-columns: 1fr;
+  }
+
+  .simulador-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .controles {
+    gap: 1rem;
+  }
+
+  .resultado .valor {
+    font-size: 2.5rem;
+  }
+
+  .resultados {
+    grid-template-columns: 1fr;
+  }
+
+  .dark-mode-toggle {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+
+  .export-buttons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 480px) {
   .calculadora {
     padding: 0.75rem;
@@ -1051,5 +1359,18 @@ body {
   .input-examen-porcentaje,
   .input-aprobacion {
     font-size: 1.2rem;
+  }
+
+  .export-section {
+    padding: 1rem;
+  }
+
+  .export-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-export {
+    padding: 0.6rem;
+    font-size: 0.9rem;
   }
 }

@@ -1,22 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx create-react-app:*)",
-      "Bash(npx create-vite:*)",
-      "Bash(npm install)",
-      "Bash(npm run dev:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(npm run build:*)",
-      "Bash(git pull:*)",
-      "Bash(git rebase:*)",
-      "WebFetch(domain:github.com)",
-      "Bash(gh workflow:*)",
-      "Bash(npm run lint)",
-      "Bash(npm run test)",
-      "Bash(npm install:*)",
-      "Bash(npm run test:*)"
+      "Bash(dir srccomponents*.tsx)"
     ],
     "deny": [],
     "ask": []

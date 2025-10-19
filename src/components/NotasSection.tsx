@@ -1,6 +1,10 @@
+import { useCallback } from 'react';
 import { Nota } from '../types';
-import { getValidationState } from '../utils/validations';
+import { NotaInput } from './NotaInput';
 
+/**
+ * Props de la sección de notas
+ */
 interface NotasSectionProps {
   notas: Nota[];
   porcentajeDisponible: number;
@@ -12,6 +16,10 @@ interface NotasSectionProps {
   modoExamen: boolean;
 }
 
+/**
+ * Componente que gestiona la sección de notas
+ * Utiliza el componente NotaInput para cada nota individual
+ */
 export const NotasSection = ({
   notas,
   porcentajeDisponible,
@@ -22,8 +30,22 @@ export const NotasSection = ({
   getPorcentajeValidation,
   modoExamen
 }: NotasSectionProps) => {
+  // Callbacks memoizados para evitar re-renders innecesarios
+  const handleChangeValor = useCallback((id: string, valor: number) => {
+    onActualizarNota(id, 'valor', valor);
+  }, [onActualizarNota]);
+
+  const handleChangePorcentaje = useCallback((id: string, porcentaje: number) => {
+    onActualizarNota(id, 'porcentaje', porcentaje);
+  }, [onActualizarNota]);
+
+  const handleEliminar = useCallback((id: string) => {
+    onEliminarNota(id);
+  }, [onEliminarNota]);
+
   return (
     <div className="notas-section">
+      {/* Sección de ejemplo/formato */}
       <div className="ejemplo-section">
         <div className="ejemplo-titulo">Ejemplo de formato:</div>
         <div className="ejemplo-row">
@@ -33,52 +55,38 @@ export const NotasSection = ({
         </div>
       </div>
 
-      {notas.map((nota) => {
-        const validationState = getValidationState(nota, porcentajeDisponible);
-        return (
-          <div key={nota.id} className="nota-row">
-            <input
-              type="number"
-              placeholder="Nota"
-              min="10"
-              max="70"
-              step="0.1"
-              value={nota.valor || ''}
-              onChange={(e) => onActualizarNota(nota.id, 'valor', parseFloat(e.target.value) || 0)}
-              className={`input-nota validation-${validationState}`}
-            />
+      {/* Lista de notas */}
+      <div className="notas-list" role="group" aria-label="Lista de notas">
+        {notas.map((nota) => (
+          <NotaInput
+            key={nota.id}
+            nota={nota}
+            porcentajeDisponible={porcentajeDisponible}
+            onChangeValor={(valor) => handleChangeValor(nota.id, valor)}
+            onChangePorcentaje={(porcentaje) => handleChangePorcentaje(nota.id, porcentaje)}
+            onEliminar={() => handleEliminar(nota.id)}
+            puedeEliminar={notas.length > 3}
+          />
+        ))}
+      </div>
 
-            <input
-              type="number"
-              placeholder="Porcentaje"
-              min="0"
-              max="100"
-              step="1"
-              value={nota.porcentaje || ''}
-              onChange={(e) => onActualizarNota(nota.id, 'porcentaje', parseInt(e.target.value) || 0)}
-              className={`input-porcentaje validation-${validationState}`}
-            />
-
-            {notas.length > 3 && (
-              <button
-                onClick={() => onEliminarNota(nota.id)}
-                className="btn-eliminar"
-                aria-label="Eliminar nota"
-              >
-                ×
-              </button>
-            )}
-          </div>
-        );
-      })}
-
-      <button onClick={onAgregarNota} className="btn-agregar">
+      {/* Botón agregar nota */}
+      <button
+        onClick={onAgregarNota}
+        className="btn-agregar"
+        aria-label="Agregar una nueva nota"
+      >
         + Agregar Nota
       </button>
 
-      <div className={`porcentaje-total validation-${getPorcentajeValidation(porcentajeTotal, modoExamen, porcentajeDisponible)}`}>
+      {/* Información total de porcentaje */}
+      <div
+        className={`porcentaje-total validation-${getPorcentajeValidation(porcentajeTotal, modoExamen, porcentajeDisponible)}`}
+        role="status"
+        aria-label={`Porcentaje total: ${porcentajeTotal}%`}
+      >
         <span>Total: {porcentajeTotal}%</span>
-        {modoExamen && <span> (Disponible: {porcentajeDisponible}%)</span>}
+        {modoExamen && <span aria-label={`Disponible: ${porcentajeDisponible}%`}> (Disponible: {porcentajeDisponible}%)</span>}
       </div>
     </div>
   );
