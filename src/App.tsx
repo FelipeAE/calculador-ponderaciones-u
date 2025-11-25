@@ -6,6 +6,9 @@ import { SimuladorSection } from './components/SimuladorSection';
 import { RecuperacionSection } from './components/RecuperacionSection';
 import { ResultadosSection } from './components/ResultadosSection';
 import { ThemeSelector } from './components/ThemeSelector';
+import { GradeBreakdown } from './components/GradeBreakdown';
+import { PercentageBar } from './components/PercentageBar';
+import { HelpSection } from './components/HelpSection';
 import './App.css';
 
 /**
@@ -18,6 +21,7 @@ function AppContent() {
     porcentajeDisponible,
     promedioActual,
     promedioFinal,
+    promedioProyectado,
     modoExamen,
     porcentajeExamen,
     notaExamen,
@@ -41,6 +45,10 @@ function AppContent() {
     limpiar
   } = useCalculador();
 
+  // Calcular porcentaje usado para componentes de visualización
+  const notasValidas = notas.filter(nota => nota.valor > 0 && nota.porcentaje > 0);
+  const porcentajeUsado = notasValidas.reduce((sum, nota) => sum + nota.porcentaje, 0);
+
   return (
     <div className={`calculadora theme-${theme}`}>
       <div className="header">
@@ -63,6 +71,13 @@ function AppContent() {
           onAgregarNota={agregarNota}
           porcentajeTotal={porcentajeTotal}
           getPorcentajeValidation={getPorcentajeValidation}
+          modoExamen={modoExamen}
+        />
+
+        {/* Barra de Porcentajes */}
+        <PercentageBar
+          porcentajeUsado={porcentajeUsado}
+          porcentajeExamen={porcentajeExamen}
           modoExamen={modoExamen}
         />
 
@@ -114,10 +129,23 @@ function AppContent() {
         <ResultadosSection
           promedioActual={promedioActual}
           promedioFinal={promedioFinal}
+          promedioProyectado={promedioProyectado}
           modoExamen={modoExamen}
           notaExamen={notaExamen}
           notaAprobacion={notaAprobacion}
         />
+
+        {/* Desglose de Promedio */}
+        <GradeBreakdown
+          promedioActual={promedioActual}
+          promedioProyectado={promedioProyectado}
+          porcentajeUsado={porcentajeUsado}
+          modoExamen={modoExamen}
+          porcentajeExamen={porcentajeExamen}
+        />
+
+        {/* Sección de Ayuda */}
+        <HelpSection />
       </div>
     </div>
   );

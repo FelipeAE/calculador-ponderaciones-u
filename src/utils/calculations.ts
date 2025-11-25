@@ -1,4 +1,4 @@
-import { Nota } from '../types';
+import { Nota, PromedioProyectadoResult } from '../types';
 
 /**
  * Calcula el promedio actual sin incluir examen
@@ -129,6 +129,37 @@ export const calcularSimuladorAvanzado = (
     notaNecesaria: Math.max(0, notaNecesariaFutura),
     esPosible,
     porcentajeDisponible: porcentajeDisponibleTotal
+  };
+};
+
+/**
+ * Calcula el promedio proyectado asumiendo nota mínima (10) para porcentaje restante
+ * @param notas Array de notas
+ * @param modoExamen Si está en modo examen
+ * @param porcentajeExamen Porcentaje del examen
+ * @param promedioActual Promedio actual de notas ingresadas
+ * @returns Objeto con promedio proyectado y detalles
+ */
+export const calcularPromedioProyectado = (
+  notas: Nota[],
+  modoExamen: boolean,
+  porcentajeExamen: number,
+  promedioActual: number
+): PromedioProyectadoResult => {
+  // Solo contar notas válidas (con valor y porcentaje > 0)
+  const notasValidas = notas.filter(nota => nota.valor > 0 && nota.porcentaje > 0);
+  const porcentajeUsado = notasValidas.reduce((sum, nota) => sum + nota.porcentaje, 0);
+  const porcentajeExamenUsado = modoExamen ? porcentajeExamen : 0;
+  const porcentajeRestante = 100 - porcentajeUsado - porcentajeExamenUsado;
+
+  // Asumir nota mínima (10) para el porcentaje restante
+  const contribucionRestante = porcentajeRestante > 0 ? (10 * porcentajeRestante / 100) : 0;
+  const promedioProyectado = promedioActual + contribucionRestante;
+
+  return {
+    promedio: promedioProyectado,
+    porcentajeRestante,
+    contribucionRestante
   };
 };
 

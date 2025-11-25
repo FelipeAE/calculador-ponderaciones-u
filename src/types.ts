@@ -44,3 +44,16 @@ export interface CalculationResult {
   /** Mensaje descriptivo si hay error */
   mensaje?: string;
 }
+
+/**
+ * Resultado del cálculo de promedio proyectado
+ * Incluye el promedio asumiendo nota mínima para porcentaje restante
+ */
+export interface PromedioProyectadoResult {
+  /** Promedio proyectado total */
+  promedio: number;
+  /** Porcentaje restante por ingresar */
+  porcentajeRestante: number;
+  /** Contribución del porcentaje restante (asumiendo nota 10) */
+  contribucionRestante: number;
+}

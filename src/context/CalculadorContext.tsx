@@ -7,6 +7,7 @@ import {
   calcularNotaNecesariaExamen,
   calcularSimuladorAvanzado,
   calcularRecuperacion,
+  calcularPromedioProyectado,
   calcularPorcentajeTotal,
   calcularPorcentajeDisponible
 } from '../utils/calculations';
@@ -49,6 +50,7 @@ interface CalculadorContextType {
   porcentajeDisponible: number;
   promedioActual: number;
   promedioFinal: number;
+  promedioProyectado: ReturnType<typeof calcularPromedioProyectado>;
   notaNecesariaExamen: number;
   simuladorAvanzado: ReturnType<typeof calcularSimuladorAvanzado>;
   calculoRecuperacion: ReturnType<typeof calcularRecuperacion>;
@@ -146,6 +148,11 @@ export const CalculadorProvider: React.FC<CalculadorProviderProps> = ({ children
     [notas, modoExamen, porcentajeExamen, notaExamen, promedioActual]
   );
 
+  const promedioProyectado = useMemo(() =>
+    calcularPromedioProyectado(notas, modoExamen, porcentajeExamen, promedioActual),
+    [notas, modoExamen, porcentajeExamen, promedioActual]
+  );
+
   const notaNecesariaExamen = useMemo(() =>
     calcularNotaNecesariaExamen(notas, porcentajeExamen, notaAprobacion),
     [notas, porcentajeExamen, notaAprobacion]
@@ -200,6 +207,7 @@ export const CalculadorProvider: React.FC<CalculadorProviderProps> = ({ children
     porcentajeDisponible,
     promedioActual,
     promedioFinal,
+    promedioProyectado,
     notaNecesariaExamen,
     simuladorAvanzado,
     calculoRecuperacion,

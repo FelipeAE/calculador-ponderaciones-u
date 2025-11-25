@@ -36,6 +36,9 @@ export const SimuladorSection = ({
       <div className="simulador-descripcion">
         <p>🎯 <strong>Simula escenarios específicos:</strong> Elige cuántas evaluaciones y qué porcentaje quieres simular.</p>
         <p><strong>Ejemplo:</strong> "De lo que me queda, solo quiero simular 2 pruebas que valen 25%" → Pon: 2 evaluaciones, 25%</p>
+        <p className="assumption-note">
+          ⚠️ <strong>Suposición:</strong> El porcentaje que NO simules se asume con nota mínima (10). Esto te da un escenario conservador.
+        </p>
       </div>
 
       <div className="simulador-inputs" role="group" aria-label="Parámetros del simulador">

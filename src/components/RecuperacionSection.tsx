@@ -26,6 +26,9 @@ export const RecuperacionSection = ({ calculoRecuperacion }: RecuperacionSection
 
       <div className="recuperacion-descripcion">
         <p>🔍 <strong>Análisis automático:</strong> Calcula si puedes aprobar usando TODO el porcentaje restante.</p>
+        <p className="assumption-note">
+          ⚠️ <strong>Importante:</strong> Este análisis asume que obtendrás la nota mínima (10) para el porcentaje restante. Si agregas manualmente una nota diferente, el promedio se ajustará con ese valor real.
+        </p>
       </div>
 
       <div
