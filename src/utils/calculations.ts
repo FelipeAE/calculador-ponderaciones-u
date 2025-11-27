@@ -38,13 +38,22 @@ export const calcularPromedioFinal = (
     acc + (nota.valor * nota.porcentaje / 100), 0
   );
 
-  const porcentajeRestante = 100 - porcentajeExamen;
-  const factorAjuste = porcentajeRestante / porcentajeNotasUsado;
+  // Calcular porcentaje faltante (hasta completar 100%, ignorando el examen)
+  const porcentajeFaltante = Math.max(0, 100 - porcentajeNotasUsado);
 
-  const promedioNotasAjustado = promedioNotasSinExamen * factorAjuste;
+  // Calcular contribución del porcentaje faltante (asumido con nota mínima 10)
+  const contribucionFaltante = 10 * porcentajeFaltante / 100;
+
+  // Promedio base (antes de considerar el examen)
+  const promedioBase = promedioNotasSinExamen + contribucionFaltante;
+
+  // Redistribuir al porcentaje disponible (sin contar el examen)
+  const porcentajeRestante = 100 - porcentajeExamen;
+  const promedioAjustado = promedioBase * porcentajeRestante / 100;
+
   const promedioExamen = (notaExamen * porcentajeExamen / 100);
 
-  return promedioNotasAjustado + promedioExamen;
+  return promedioAjustado + promedioExamen;
 };
 
 /**
@@ -60,7 +69,6 @@ export const calcularNotaNecesariaExamen = (
   notaAprobacion: number
 ): number => {
   const porcentajeNotasUsado = notas.reduce((sum, nota) => sum + nota.porcentaje, 0);
-  const porcentajeRestante = 100 - porcentajeExamen;
 
   if (porcentajeNotasUsado === 0) {
     return Math.max(0, ((notaAprobacion * 100 / porcentajeExamen)));
@@ -70,10 +78,20 @@ export const calcularNotaNecesariaExamen = (
     acc + (nota.valor * nota.porcentaje / 100), 0
   );
 
-  const factorAjuste = porcentajeRestante / porcentajeNotasUsado;
-  const promedioNotasAjustado = promedioNotasSinExamen * factorAjuste;
+  // Calcular porcentaje faltante (hasta completar 100%, ignorando el examen)
+  const porcentajeFaltante = Math.max(0, 100 - porcentajeNotasUsado);
 
-  const notaNecesaria = (notaAprobacion - promedioNotasAjustado) * 100 / porcentajeExamen;
+  // Calcular contribución del porcentaje faltante (asumido con nota mínima 10)
+  const contribucionFaltante = 10 * porcentajeFaltante / 100;
+
+  // Promedio base (antes de considerar el examen)
+  const promedioBase = promedioNotasSinExamen + contribucionFaltante;
+
+  // Redistribuir al porcentaje disponible (sin contar el examen)
+  const porcentajeRestante = 100 - porcentajeExamen;
+  const promedioAjustado = promedioBase * porcentajeRestante / 100;
+
+  const notaNecesaria = (notaAprobacion - promedioAjustado) * 100 / porcentajeExamen;
   return Math.max(0, notaNecesaria);
 };
 
