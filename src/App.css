@@ -366,10 +366,9 @@ body {
 }
 
 .examen-info {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  align-items: end;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .input-group {
@@ -623,6 +622,72 @@ body {
 }
 
 /* ========================================
+   SELECTOR DE NOTA DE APROBACIÓN
+   ======================================== */
+
+.aprobacion-selector {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.aprobacion-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 1rem 0;
+}
+
+.aprobacion-buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.aprobacion-button {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  min-width: 60px;
+  height: 50px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #374151;
+  flex-shrink: 0;
+}
+
+.aprobacion-button:hover {
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+}
+
+.aprobacion-button:active {
+  transform: translateY(0);
+}
+
+.aprobacion-button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.aprobacion-subtitle {
+  font-size: 0.9rem;
+  color: #64748b;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+/* ========================================
    THEME SELECTOR
    ======================================== */
 
@@ -838,6 +903,36 @@ body {
   border-color: #667eea;
 }
 
+.theme-dark .aprobacion-selector {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.theme-dark .aprobacion-title {
+  color: #f9fafb;
+}
+
+.theme-dark .aprobacion-button {
+  background: #4b5563;
+  color: #f9fafb;
+  border-color: #6b7280;
+}
+
+.theme-dark .aprobacion-button:hover {
+  border-color: #667eea;
+  background: #374151;
+}
+
+.theme-dark .aprobacion-button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+}
+
+.theme-dark .aprobacion-subtitle {
+  color: #d1d5db;
+}
+
 /* OCEAN THEME */
 .theme-ocean {
   background: linear-gradient(135deg, #0369a1 0%, #0e7490 50%, #164e63 100%);
@@ -876,6 +971,32 @@ body {
 .theme-ocean .simulador-section h3,
 .theme-ocean .recuperacion-section h3 {
   color: #164e63;
+}
+
+.theme-ocean .aprobacion-selector {
+  background: #e0f2fe;
+  border-color: #0369a1;
+}
+
+.theme-ocean .aprobacion-title {
+  color: #164e63;
+}
+
+.theme-ocean .aprobacion-button {
+  background: #f0f9ff;
+  color: #164e63;
+  border-color: #0369a1;
+}
+
+.theme-ocean .aprobacion-button:hover {
+  border-color: #0284c7;
+  background: #e0f2fe;
+}
+
+.theme-ocean .aprobacion-button.active {
+  background: linear-gradient(135deg, #0369a1 0%, #0e7490 100%);
+  color: white;
+  border-color: #0369a1;
 }
 
 /* FOREST THEME */
@@ -918,6 +1039,32 @@ body {
   color: #15803d;
 }
 
+.theme-forest .aprobacion-selector {
+  background: #dcfce7;
+  border-color: #22c55e;
+}
+
+.theme-forest .aprobacion-title {
+  color: #15803d;
+}
+
+.theme-forest .aprobacion-button {
+  background: #f0fdf4;
+  color: #15803d;
+  border-color: #22c55e;
+}
+
+.theme-forest .aprobacion-button:hover {
+  border-color: #16a34a;
+  background: #dcfce7;
+}
+
+.theme-forest .aprobacion-button.active {
+  background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+  color: white;
+  border-color: #15803d;
+}
+
 /* SUNSET THEME */
 .theme-sunset {
   background: linear-gradient(135deg, #ea580c 0%, #f59e0b 50%, #fbbf24 100%);
@@ -956,6 +1103,32 @@ body {
 .theme-sunset .simulador-section h3,
 .theme-sunset .recuperacion-section h3 {
   color: #ea580c;
+}
+
+.theme-sunset .aprobacion-selector {
+  background: #fed7aa;
+  border-color: #f59e0b;
+}
+
+.theme-sunset .aprobacion-title {
+  color: #ea580c;
+}
+
+.theme-sunset .aprobacion-button {
+  background: #fffbeb;
+  color: #ea580c;
+  border-color: #f59e0b;
+}
+
+.theme-sunset .aprobacion-button:hover {
+  border-color: #ea580c;
+  background: #fed7aa;
+}
+
+.theme-sunset .aprobacion-button.active {
+  background: linear-gradient(135deg, #ea580c 0%, #f59e0b 100%);
+  color: white;
+  border-color: #ea580c;
 }
 
 /* ========================================
@@ -1001,10 +1174,6 @@ body {
   }
 
   .examen-inputs,
-  .examen-info {
-    grid-template-columns: 1fr;
-  }
-
   .simulador-inputs {
     grid-template-columns: 1fr;
   }
@@ -1287,10 +1456,6 @@ body {
   }
 
   .examen-inputs,
-  .examen-info {
-    grid-template-columns: 1fr;
-  }
-
   .simulador-inputs {
     grid-template-columns: 1fr;
   }

@@ -8,12 +8,10 @@ describe('ExamenSection Component', () => {
     modoExamen: false,
     porcentajeExamen: 30,
     notaExamen: 0,
-    notaAprobacion: 40,
     notaNecesariaExamen: 45.5,
     onChangeExamen: vi.fn(),
     onChangePorcentajeExamen: vi.fn(),
-    onChangeNotaExamen: vi.fn(),
-    onChangeNotaAprobacion: vi.fn()
+    onChangeNotaExamen: vi.fn()
   };
 
   it('should render the component', () => {

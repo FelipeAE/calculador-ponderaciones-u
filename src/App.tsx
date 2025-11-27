@@ -1,6 +1,7 @@
 import { getPorcentajeValidation } from './utils/validations';
 import { CalculadorProvider, useCalculador } from './context/CalculadorContext';
 import { NotasSection } from './components/NotasSection';
+import { AprobacionSelector } from './components/AprobacionSelector';
 import { ExamenSection } from './components/ExamenSection';
 import { SimuladorSection } from './components/SimuladorSection';
 import { RecuperacionSection } from './components/RecuperacionSection';
@@ -81,18 +82,22 @@ function AppContent() {
           modoExamen={modoExamen}
         />
 
+        {/* Selector de Nota de Aprobación */}
+        <AprobacionSelector
+          notaAprobacion={notaAprobacion}
+          onChangeNotaAprobacion={setNotaAprobacion}
+        />
+
         <div className="controles">
           {/* Sección de Examen */}
           <ExamenSection
             modoExamen={modoExamen}
             porcentajeExamen={porcentajeExamen}
             notaExamen={notaExamen}
-            notaAprobacion={notaAprobacion}
             notaNecesariaExamen={notaNecesariaExamen}
             onChangeExamen={setModoExamen}
             onChangePorcentajeExamen={setPorcentajeExamen}
             onChangeNotaExamen={setNotaExamen}
-            onChangeNotaAprobacion={setNotaAprobacion}
           />
 
           {/* Sección Simulador */}

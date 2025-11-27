@@ -5,12 +5,10 @@ interface ExamenSectionProps {
   modoExamen: boolean;
   porcentajeExamen: number;
   notaExamen: number;
-  notaAprobacion: number;
   notaNecesariaExamen: number;
   onChangeExamen: (checked: boolean) => void;
   onChangePorcentajeExamen: (valor: number) => void;
   onChangeNotaExamen: (valor: number) => void;
-  onChangeNotaAprobacion: (valor: number) => void;
 }
 
 /**
@@ -21,12 +19,10 @@ export const ExamenSection = ({
   modoExamen,
   porcentajeExamen,
   notaExamen,
-  notaAprobacion,
   notaNecesariaExamen,
   onChangeExamen,
   onChangePorcentajeExamen,
-  onChangeNotaExamen,
-  onChangeNotaAprobacion
+  onChangeNotaExamen
 }: ExamenSectionProps) => {
   return (
     <fieldset className="modo-examen">
@@ -81,22 +77,6 @@ export const ExamenSection = ({
           </div>
 
           <div className="examen-info">
-            <div className="input-group">
-              <label htmlFor="nota-aprobacion-input">Nota aprobación</label>
-              <input
-                id="nota-aprobacion-input"
-                type="number"
-                min="0"
-                max="100"
-                value={notaAprobacion}
-                onChange={(e) => onChangeNotaAprobacion(parseFloat(e.target.value) || 40)}
-                className="input-aprobacion"
-                aria-label="Nota mínima para aprobar"
-                aria-describedby="nota-aprobacion-help"
-              />
-              <small id="nota-aprobacion-help">Nota mínima requerida</small>
-            </div>
-
             <div className="nota-necesaria">
               <label htmlFor="nota-necesaria-display">Nota que necesitas en el examen</label>
               <div
@@ -104,9 +84,9 @@ export const ExamenSection = ({
                 className="valor-necesario"
                 role="status"
                 aria-live="polite"
-                aria-label={`Nota necesaria: ${modoExamen && notaAprobacion > 0 ? notaNecesariaExamen.toFixed(1) : '0'}`}
+                aria-label={`Nota necesaria: ${modoExamen ? notaNecesariaExamen.toFixed(1) : '0'}`}
               >
-                {modoExamen && notaAprobacion > 0 ? notaNecesariaExamen.toFixed(1) : '0'}
+                {modoExamen ? notaNecesariaExamen.toFixed(1) : '0'}
               </div>
             </div>
           </div>
