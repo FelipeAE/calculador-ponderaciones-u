@@ -29,3 +29,10 @@ dist-ssr
 .env.development.local
 .env.test.local
 .env.production.local
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Antigravity agent config
+.agents/
+skills-lock.json
