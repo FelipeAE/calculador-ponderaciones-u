@@ -4,6 +4,7 @@ import { NotasSection } from './components/NotasSection';
 import { AprobacionSelector } from './components/AprobacionSelector';
 import { ExamenSection } from './components/ExamenSection';
 import { SimuladorSection } from './components/SimuladorSection';
+import { CuantoNecesitoSection } from './components/CuantoNecesitoSection';
 import { RecuperacionSection } from './components/RecuperacionSection';
 import { ResultadosSection } from './components/ResultadosSection';
 import { ThemeSelector } from './components/ThemeSelector';
@@ -43,6 +44,17 @@ function AppContent() {
     notaNecesariaExamen,
     simuladorAvanzado,
     calculoRecuperacion,
+    resultadoInverso,
+    promedioActualInverso,
+    notasRendidas,
+    totalNotasRamo,
+    promedioObjetivoInverso,
+    porcentajeManualInverso,
+    setPromedioActualInverso,
+    setNotasRendidas,
+    setTotalNotasRamo,
+    setPromedioObjetivoInverso,
+    setPorcentajeManualInverso,
     limpiar
   } = useCalculador();
 
@@ -107,6 +119,21 @@ function AppContent() {
             simuladorAvanzado={simuladorAvanzado}
             onChangeEvaluacionesFuturas={setEvaluacionesFuturas}
             onChangePorcentajeFuturo={setPorcentajeFuturo}
+          />
+
+          {/* Sección ¿Cuánto Necesito? */}
+          <CuantoNecesitoSection
+            resultadoInverso={resultadoInverso}
+            promedioActualInverso={promedioActualInverso}
+            notasRendidas={notasRendidas}
+            totalNotasRamo={totalNotasRamo}
+            promedioObjetivoInverso={promedioObjetivoInverso}
+            porcentajeManualInverso={porcentajeManualInverso}
+            onChangePromedioActual={setPromedioActualInverso}
+            onChangeNotasRendidas={setNotasRendidas}
+            onChangeTotalNotas={setTotalNotasRamo}
+            onChangePromedioObjetivo={setPromedioObjetivoInverso}
+            onChangePorcentajeManual={setPorcentajeManualInverso}
           />
 
           {/* Sección Recuperación */}

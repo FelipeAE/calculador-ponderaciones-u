@@ -57,3 +57,23 @@ export interface PromedioProyectadoResult {
   /** Contribución del porcentaje restante (asumiendo nota 10) */
   contribucionRestante: number;
 }
+
+/**
+ * Resultado del cálculo inverso "¿Cuánto Necesito?"
+ * Calcula la nota necesaria para alcanzar un promedio objetivo
+ * sin conocer las ponderaciones individuales de notas anteriores
+ */
+export interface ResultadoInverso {
+  /** Nota necesaria en las evaluaciones restantes */
+  notaNecesaria: number;
+  /** Si es posible alcanzar el objetivo (nota entre 10 y 70) */
+  esPosible: boolean;
+  /** Porcentaje acumulado de las notas ya rendidas */
+  porcentajeAcumulado: number;
+  /** Porcentaje restante para evaluaciones futuras */
+  porcentajeRestante: number;
+  /** Promedio máximo alcanzable (con nota 70 en restante) */
+  promedioMaximoAlcanzable: number;
+  /** Mensaje descriptivo del resultado */
+  mensaje: string;
+}

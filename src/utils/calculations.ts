@@ -1,4 +1,4 @@
-import { Nota, PromedioProyectadoResult } from '../types';
+import { Nota, PromedioProyectadoResult, ResultadoInverso } from '../types';
 
 /**
  * Calcula el promedio actual sin incluir examen
@@ -281,4 +281,109 @@ export const calcularPorcentajeTotal = (notas: Nota[]): number => {
  */
 export const calcularPorcentajeDisponible = (modoExamen: boolean, porcentajeExamen: number): number => {
   return modoExamen ? 100 - porcentajeExamen : 100;
+};
+
+/**
+ * Calcula la nota necesaria para alcanzar un promedio objetivo
+ * sin conocer las ponderaciones individuales de las notas anteriores.
+ *
+ * Útil cuando el estudiante solo sabe su promedio actual y cuántas
+ * evaluaciones lleva/faltan, pero no conoce los porcentajes individuales.
+ *
+ * @param promedioActual Promedio de las notas ya rendidas (10-70)
+ * @param notasRendidas Cantidad de notas ya rendidas
+ * @param totalNotas Total de notas del ramo
+ * @param promedioObjetivo Promedio que se quiere alcanzar (ej: 50 para eximirse)
+ * @param porcentajeManual Porcentaje acumulado real (opcional, si el usuario lo conoce)
+ * @returns Objeto ResultadoInverso con la nota necesaria y análisis
+ */
+export const calcularNotaNecesariaInversa = (
+  promedioActual: number,
+  notasRendidas: number,
+  totalNotas: number,
+  promedioObjetivo: number,
+  porcentajeManual?: number | null
+): ResultadoInverso => {
+  // Validar inputs básicos
+  if (totalNotas <= 0 || notasRendidas < 0 || notasRendidas >= totalNotas) {
+    return {
+      notaNecesaria: 0,
+      esPosible: false,
+      porcentajeAcumulado: 0,
+      porcentajeRestante: 0,
+      promedioMaximoAlcanzable: 0,
+      mensaje: notasRendidas >= totalNotas
+        ? 'Ya rendiste todas las evaluaciones'
+        : 'Parámetros inválidos'
+    };
+  }
+
+  // Calcular porcentajes
+  const porcentajeAcumulado = porcentajeManual != null && porcentajeManual > 0
+    ? porcentajeManual
+    : (notasRendidas / totalNotas) * 100;
+
+  const porcentajeRestante = 100 - porcentajeAcumulado;
+
+  if (porcentajeRestante <= 0) {
+    return {
+      notaNecesaria: 0,
+      esPosible: false,
+      porcentajeAcumulado,
+      porcentajeRestante: 0,
+      promedioMaximoAlcanzable: promedioActual,
+      mensaje: 'No queda porcentaje disponible'
+    };
+  }
+
+  // Contribución actual al promedio final
+  // Si el promedio de las notas rendidas es P y cubren W% del total:
+  // contribución = P × W / 100
+  const contribucionActual = promedioActual * porcentajeAcumulado / 100;
+
+  // Promedio máximo alcanzable (con nota 70 en todo lo restante)
+  const promedioMaximoAlcanzable = contribucionActual + (70 * porcentajeRestante / 100);
+
+  // Si ya cumple el objetivo con el promedio actual proyectado
+  if (contribucionActual >= promedioObjetivo) {
+    return {
+      notaNecesaria: 10,
+      esPosible: true,
+      porcentajeAcumulado,
+      porcentajeRestante,
+      promedioMaximoAlcanzable,
+      mensaje: '¡Ya tienes suficiente! Incluso con la nota mínima (10) alcanzas el objetivo'
+    };
+  }
+
+  // Calcular nota necesaria
+  // promedioObjetivo = contribucionActual + (notaNecesaria × porcentajeRestante / 100)
+  // Despejando: notaNecesaria = (promedioObjetivo - contribucionActual) × 100 / porcentajeRestante
+  const notaNecesaria = (promedioObjetivo - contribucionActual) * 100 / porcentajeRestante;
+
+  const esPosible = notaNecesaria >= 10 && notaNecesaria <= 70;
+  const notasRestantes = totalNotas - notasRendidas;
+
+  let mensaje: string;
+  if (notaNecesaria < 10) {
+    mensaje = '¡Ya tienes suficiente! Incluso con la nota mínima (10) alcanzas el objetivo';
+  } else if (notaNecesaria > 70) {
+    mensaje = `Imposible alcanzar el objetivo. Necesitarías ${notaNecesaria.toFixed(1)} pero la nota máxima es 70. Lo máximo que podrías alcanzar es ${promedioMaximoAlcanzable.toFixed(1)}`;
+  } else {
+    const notaStr = notaNecesaria.toFixed(1);
+    if (notasRestantes === 1) {
+      mensaje = `Necesitas un ${notaStr} en la evaluación restante (${porcentajeRestante.toFixed(1)}%) para alcanzar promedio ${promedioObjetivo}`;
+    } else {
+      mensaje = `Necesitas promedio ${notaStr} en las ${notasRestantes} evaluaciones restantes (${porcentajeRestante.toFixed(1)}%) para alcanzar promedio ${promedioObjetivo}`;
+    }
+  }
+
+  return {
+    notaNecesaria: Math.max(0, notaNecesaria),
+    esPosible,
+    porcentajeAcumulado,
+    porcentajeRestante,
+    promedioMaximoAlcanzable,
+    mensaje
+  };
 };

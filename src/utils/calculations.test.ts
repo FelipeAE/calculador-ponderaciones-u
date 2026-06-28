@@ -11,7 +11,8 @@ import {
   calcularSimuladorAvanzado,
   calcularRecuperacion,
   calcularPorcentajeTotal,
-  calcularPorcentajeDisponible
+  calcularPorcentajeDisponible,
+  calcularNotaNecesariaInversa
 } from './calculations';
 import { Nota } from '../types';
 
@@ -330,6 +331,94 @@ describe('Cálculos con Porcentaje Faltante', () => {
       // Promedio final: 37.125 + 12.5 = 49.625
       const resultado = calcularPromedioFinal(notas, 25, notaExamen);
       expect(resultado).toBeCloseTo(49.625, 2);
+    });
+  });
+});
+
+describe('Calculadora Inversa - ¿Cuánto Necesito?', () => {
+  describe('calcularNotaNecesariaInversa', () => {
+    it('caso del usuario: 3 notas promedio 46, 4 notas total, objetivo 50 → nota 62', () => {
+      // 3/4 = 75% acumulado, 25% restante
+      // contribución actual = 46 * 75/100 = 34.5
+      // nota necesaria = (50 - 34.5) * 100 / 25 = 62
+      const resultado = calcularNotaNecesariaInversa(46, 3, 4, 50);
+      expect(resultado.notaNecesaria).toBeCloseTo(62, 1);
+      expect(resultado.esPosible).toBe(true);
+      expect(resultado.porcentajeAcumulado).toBeCloseTo(75, 1);
+      expect(resultado.porcentajeRestante).toBeCloseTo(25, 1);
+    });
+
+    it('debe indicar imposible cuando la nota necesaria excede 70', () => {
+      // 3/4 = 75%, promedio 30, objetivo 55
+      // contribución = 30 * 75/100 = 22.5
+      // nota necesaria = (55 - 22.5) * 100 / 25 = 130 → imposible
+      const resultado = calcularNotaNecesariaInversa(30, 3, 4, 55);
+      expect(resultado.notaNecesaria).toBeGreaterThan(70);
+      expect(resultado.esPosible).toBe(false);
+      expect(resultado.mensaje).toContain('Imposible');
+    });
+
+    it('debe indicar que ya alcanza el objetivo cuando el promedio actual es suficiente', () => {
+      // 3/4 = 75%, promedio 60, objetivo 40
+      // contribución = 60 * 75/100 = 45 ≥ 40 → ya cumple
+      const resultado = calcularNotaNecesariaInversa(60, 3, 4, 40);
+      expect(resultado.esPosible).toBe(true);
+      expect(resultado.mensaje).toContain('Ya tienes suficiente');
+    });
+
+    it('debe usar porcentaje manual cuando se proporciona', () => {
+      // En vez de 3/4=75%, usar 60% manual
+      // contribución = 46 * 60/100 = 27.6
+      // nota necesaria = (50 - 27.6) * 100 / 40 = 56
+      const resultado = calcularNotaNecesariaInversa(46, 3, 4, 50, 60);
+      expect(resultado.notaNecesaria).toBeCloseTo(56, 1);
+      expect(resultado.esPosible).toBe(true);
+      expect(resultado.porcentajeAcumulado).toBe(60);
+      expect(resultado.porcentajeRestante).toBe(40);
+    });
+
+    it('debe manejar caso con 1 nota rendida de 5 totales', () => {
+      // 1/5 = 20% acumulado, 80% restante
+      // contribución = 50 * 20/100 = 10
+      // nota necesaria = (40 - 10) * 100 / 80 = 37.5
+      const resultado = calcularNotaNecesariaInversa(50, 1, 5, 40);
+      expect(resultado.notaNecesaria).toBeCloseTo(37.5, 1);
+      expect(resultado.esPosible).toBe(true);
+    });
+
+    it('debe retornar error cuando notasRendidas >= totalNotas', () => {
+      const resultado = calcularNotaNecesariaInversa(46, 4, 4, 50);
+      expect(resultado.esPosible).toBe(false);
+      expect(resultado.mensaje).toContain('Ya rendiste todas');
+    });
+
+    it('debe retornar error con parámetros inválidos', () => {
+      const resultado = calcularNotaNecesariaInversa(46, -1, 4, 50);
+      expect(resultado.esPosible).toBe(false);
+    });
+
+    it('debe calcular promedio máximo alcanzable correctamente', () => {
+      // 3/4 = 75%, promedio 46
+      // contribución = 46 * 75/100 = 34.5
+      // máximo = 34.5 + (70 * 25/100) = 34.5 + 17.5 = 52
+      const resultado = calcularNotaNecesariaInversa(46, 3, 4, 50);
+      expect(resultado.promedioMaximoAlcanzable).toBeCloseTo(52, 1);
+    });
+
+    it('debe ignorar porcentaje manual null', () => {
+      const conNull = calcularNotaNecesariaInversa(46, 3, 4, 50, null);
+      const sinParam = calcularNotaNecesariaInversa(46, 3, 4, 50);
+      expect(conNull.notaNecesaria).toBeCloseTo(sinParam.notaNecesaria, 5);
+    });
+
+    it('debe generar mensaje singular para 1 evaluación restante', () => {
+      const resultado = calcularNotaNecesariaInversa(46, 3, 4, 50);
+      expect(resultado.mensaje).toContain('evaluación restante');
+    });
+
+    it('debe generar mensaje plural para múltiples evaluaciones restantes', () => {
+      const resultado = calcularNotaNecesariaInversa(46, 1, 4, 50);
+      expect(resultado.mensaje).toContain('evaluaciones restantes');
     });
   });
 });

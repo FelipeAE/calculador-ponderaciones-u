@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useCallback, useMemo, ReactNode } from 'react';
-import { Nota } from '../types';
+import { Nota, ResultadoInverso } from '../types';
 import { Theme } from '../types/theme';
 import {
   calcularPromedioActual,
@@ -9,7 +9,8 @@ import {
   calcularRecuperacion,
   calcularPromedioProyectado,
   calcularPorcentajeTotal,
-  calcularPorcentajeDisponible
+  calcularPorcentajeDisponible,
+  calcularNotaNecesariaInversa
 } from '../utils/calculations';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
@@ -41,6 +42,18 @@ interface CalculadorContextType {
   setEvaluacionesFuturas: (valor: number) => void;
   setPorcentajeFuturo: (valor: number) => void;
 
+  // Estado de ¿Cuánto Necesito? (Calculadora Inversa)
+  promedioActualInverso: number;
+  notasRendidas: number;
+  totalNotasRamo: number;
+  promedioObjetivoInverso: number;
+  porcentajeManualInverso: number | null;
+  setPromedioActualInverso: (valor: number) => void;
+  setNotasRendidas: (valor: number) => void;
+  setTotalNotasRamo: (valor: number) => void;
+  setPromedioObjetivoInverso: (valor: number) => void;
+  setPorcentajeManualInverso: (valor: number | null) => void;
+
   // Estado de Tema
   theme: Theme;
   setTheme: (tema: Theme) => void;
@@ -54,6 +67,7 @@ interface CalculadorContextType {
   notaNecesariaExamen: number;
   simuladorAvanzado: ReturnType<typeof calcularSimuladorAvanzado>;
   calculoRecuperacion: ReturnType<typeof calcularRecuperacion>;
+  resultadoInverso: ResultadoInverso | null;
 
   // Utilidades
   limpiar: () => void;
@@ -90,6 +104,13 @@ export const CalculadorProvider: React.FC<CalculadorProviderProps> = ({ children
   const [porcentajeFuturo, setPorcentajeFuturo] = useLocalStorage('calc_porcentajeFuturo', 0);
   const [theme, setTheme] = useLocalStorage<Theme>('calc_theme', 'light');
 
+  // Estado de ¿Cuánto Necesito?
+  const [promedioActualInverso, setPromedioActualInverso] = useLocalStorage('calc_promedioActualInverso', 0);
+  const [notasRendidas, setNotasRendidas] = useLocalStorage('calc_notasRendidas', 3);
+  const [totalNotasRamo, setTotalNotasRamo] = useLocalStorage('calc_totalNotasRamo', 4);
+  const [promedioObjetivoInverso, setPromedioObjetivoInverso] = useLocalStorage('calc_promedioObjetivoInverso', 0);
+  const [porcentajeManualInverso, setPorcentajeManualInverso] = useLocalStorage<number | null>('calc_porcentajeManualInverso', null);
+
   // Callbacks memoizados
   const agregarNota = useCallback(() => {
     const nuevaNota: Nota = {
@@ -123,7 +144,12 @@ export const CalculadorProvider: React.FC<CalculadorProviderProps> = ({ children
     setNotaAprobacion(40);
     setEvaluacionesFuturas(0);
     setPorcentajeFuturo(0);
-  }, [setNotas, setModoExamen, setPorcentajeExamen, setNotaExamen, setNotaAprobacion, setEvaluacionesFuturas, setPorcentajeFuturo]);
+    setPromedioActualInverso(0);
+    setNotasRendidas(3);
+    setTotalNotasRamo(4);
+    setPromedioObjetivoInverso(0);
+    setPorcentajeManualInverso(null);
+  }, [setNotas, setModoExamen, setPorcentajeExamen, setNotaExamen, setNotaAprobacion, setEvaluacionesFuturas, setPorcentajeFuturo, setPromedioActualInverso, setNotasRendidas, setTotalNotasRamo, setPromedioObjetivoInverso, setPorcentajeManualInverso]);
 
   // Cálculos memoizados
   const porcentajeTotal = useMemo(() =>
@@ -184,6 +210,19 @@ export const CalculadorProvider: React.FC<CalculadorProviderProps> = ({ children
     [notas, modoExamen, porcentajeExamen, promedioActual, promedioFinal, notaAprobacion]
   );
 
+  const resultadoInverso = useMemo(() => {
+    if (promedioActualInverso <= 0 || totalNotasRamo <= 0 || promedioObjetivoInverso <= 0) {
+      return null;
+    }
+    return calcularNotaNecesariaInversa(
+      promedioActualInverso,
+      notasRendidas,
+      totalNotasRamo,
+      promedioObjetivoInverso,
+      porcentajeManualInverso
+    );
+  }, [promedioActualInverso, notasRendidas, totalNotasRamo, promedioObjetivoInverso, porcentajeManualInverso]);
+
   const value: CalculadorContextType = {
     notas,
     agregarNota,
@@ -201,6 +240,16 @@ export const CalculadorProvider: React.FC<CalculadorProviderProps> = ({ children
     porcentajeFuturo,
     setEvaluacionesFuturas,
     setPorcentajeFuturo,
+    promedioActualInverso,
+    notasRendidas,
+    totalNotasRamo,
+    promedioObjetivoInverso,
+    porcentajeManualInverso,
+    setPromedioActualInverso,
+    setNotasRendidas,
+    setTotalNotasRamo,
+    setPromedioObjetivoInverso,
+    setPorcentajeManualInverso,
     theme,
     setTheme,
     porcentajeTotal,
@@ -211,6 +260,7 @@ export const CalculadorProvider: React.FC<CalculadorProviderProps> = ({ children
     notaNecesariaExamen,
     simuladorAvanzado,
     calculoRecuperacion,
+    resultadoInverso,
     limpiar
   };
 

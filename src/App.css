@@ -428,7 +428,8 @@ body {
    ======================================== */
 
 .simulador-section,
-.recuperacion-section {
+.recuperacion-section,
+.cuanto-necesito-section {
   background: #f8fafc;
   border-radius: 15px;
   padding: 1.5rem;
@@ -437,7 +438,8 @@ body {
 }
 
 .simulador-section h3,
-.recuperacion-section h3 {
+.recuperacion-section h3,
+.cuanto-necesito-section h3 {
   color: #374151;
   margin: 0 0 1rem 0;
   font-size: 1.2rem;
@@ -445,7 +447,8 @@ body {
 }
 
 .simulador-descripcion,
-.recuperacion-descripcion {
+.recuperacion-descripcion,
+.cuanto-necesito-descripcion {
   background: #f1f5f9;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
@@ -457,16 +460,19 @@ body {
 }
 
 .simulador-descripcion p,
-.recuperacion-descripcion p {
+.recuperacion-descripcion p,
+.cuanto-necesito-descripcion p {
   margin: 0 0 0.5rem 0;
 }
 
 .simulador-descripcion p:last-child,
-.recuperacion-descripcion p:last-child {
+.recuperacion-descripcion p:last-child,
+.cuanto-necesito-descripcion p:last-child {
   margin-bottom: 0;
 }
 
-.simulador-inputs {
+.simulador-inputs,
+.cuanto-necesito-inputs {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
@@ -538,6 +544,108 @@ body {
   background: #fef2f2;
   color: #dc2626;
   border: 2px solid #fecaca;
+}
+
+/* ========================================
+   ¿CUÁNTO NECESITO? - ESTILOS ÚNICOS
+   ======================================== */
+
+.cuanto-necesito-toggle {
+  margin-bottom: 1rem;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #374151;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #667eea;
+  cursor: pointer;
+}
+
+.input-group-wide {
+  grid-column: 1 / -1;
+}
+
+.cuanto-necesito-resultado {
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  border: 2px solid #e2e8f0;
+}
+
+.resultado-inverso {
+  font-weight: 600;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.resultado-inverso.posible {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.resultado-inverso.imposible {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.resultado-icon {
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+.resultado-mensaje {
+  line-height: 1.4;
+}
+
+.nota-necesaria-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  color: white;
+}
+
+.nota-label {
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.nota-valor {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cuanto-necesito-detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cuanto-necesito-detalles small {
+  color: #6b7280;
+  font-size: 0.8rem;
 }
 
 /* ========================================
@@ -805,18 +913,21 @@ body {
 }
 
 .theme-dark .simulador-section,
-.theme-dark .recuperacion-section {
+.theme-dark .recuperacion-section,
+.theme-dark .cuanto-necesito-section {
   background: #374151;
   border-color: #4b5563;
 }
 
 .theme-dark .simulador-section h3,
-.theme-dark .recuperacion-section h3 {
+.theme-dark .recuperacion-section h3,
+.theme-dark .cuanto-necesito-section h3 {
   color: #f9fafb;
 }
 
 .theme-dark .simulador-descripcion,
-.theme-dark .recuperacion-descripcion {
+.theme-dark .recuperacion-descripcion,
+.theme-dark .cuanto-necesito-descripcion {
   background: #4b5563;
   border-color: #6b7280;
   color: #f9fafb;
@@ -834,23 +945,34 @@ body {
 }
 
 .theme-dark .simulador-resultado,
-.theme-dark .recuperacion-resultado {
+.theme-dark .recuperacion-resultado,
+.theme-dark .cuanto-necesito-resultado {
   background: #4b5563;
   border-color: #6b7280;
 }
 
 .theme-dark .resultado-simulador.posible,
-.theme-dark .recuperacion-resultado.posible {
+.theme-dark .recuperacion-resultado.posible,
+.theme-dark .resultado-inverso.posible {
   background: #064e3b;
   color: #d1fae5;
   border-color: #059669;
 }
 
 .theme-dark .resultado-simulador.imposible,
-.theme-dark .recuperacion-resultado.imposible {
+.theme-dark .recuperacion-resultado.imposible,
+.theme-dark .resultado-inverso.imposible {
   background: #7f1d1d;
   color: #fecaca;
   border-color: #dc2626;
+}
+
+.theme-dark .cuanto-necesito-detalles small {
+  color: #d1d5db;
+}
+
+.theme-dark .toggle-label {
+  color: #f9fafb;
 }
 
 .theme-dark .porcentaje-total {
@@ -963,13 +1085,15 @@ body {
 }
 
 .theme-ocean .simulador-section,
-.theme-ocean .recuperacion-section {
+.theme-ocean .recuperacion-section,
+.theme-ocean .cuanto-necesito-section {
   background: #e0f2fe;
   border-color: #06b6d4;
 }
 
 .theme-ocean .simulador-section h3,
-.theme-ocean .recuperacion-section h3 {
+.theme-ocean .recuperacion-section h3,
+.theme-ocean .cuanto-necesito-section h3 {
   color: #164e63;
 }
 
@@ -1029,13 +1153,15 @@ body {
 }
 
 .theme-forest .simulador-section,
-.theme-forest .recuperacion-section {
+.theme-forest .recuperacion-section,
+.theme-forest .cuanto-necesito-section {
   background: #dcfce7;
   border-color: #22c55e;
 }
 
 .theme-forest .simulador-section h3,
-.theme-forest .recuperacion-section h3 {
+.theme-forest .recuperacion-section h3,
+.theme-forest .cuanto-necesito-section h3 {
   color: #15803d;
 }
 
@@ -1095,13 +1221,15 @@ body {
 }
 
 .theme-sunset .simulador-section,
-.theme-sunset .recuperacion-section {
+.theme-sunset .recuperacion-section,
+.theme-sunset .cuanto-necesito-section {
   background: #fed7aa;
   border-color: #f59e0b;
 }
 
 .theme-sunset .simulador-section h3,
-.theme-sunset .recuperacion-section h3 {
+.theme-sunset .recuperacion-section h3,
+.theme-sunset .cuanto-necesito-section h3 {
   color: #ea580c;
 }
 
